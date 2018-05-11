@@ -24,20 +24,24 @@ import { VisaModel } from "./models";
                             for (var j = 0; j < m.length; j++) {
                                 if(m[j].name.get() == "__visa_to_validate__") {
                                     m[j].load((el) => {
-                                        for (var k = 0; k < el.length; k++) {
-                                            if(el[k].name.get() == user.username) {
-                                                el[k].load((el2) => {
-                                                    factory.allVisa = el2;
-                                                    initQ.resolve(el2);
-                                                })
 
-                                                return;
-                                            }
-                                        }
+                                    factory.allVisa = el;
+                                    initQ.resolve(el);
 
-                                        factory.allVisa = new Directory();
-                                        el.add_file(user.username,new Directory(),{model_type : "Directory"})
-                                        initQ.resolve(factory.allVisa);
+                                        // for (var k = 0; k < el.length; k++) {
+                                        //     if(el[k].name.get() == user.username) {
+                                        //         el[k].load((el2) => {
+                                        //             factory.allVisa = el2;
+                                        //             initQ.resolve(el2);
+                                        //         })
+
+                                        //         return;
+                                        //     }
+                                        // }
+
+                                        // factory.allVisa = new Directory();
+                                        // el.add_file(user.username,new Directory(),{model_type : "Directory"})
+                                        // initQ.resolve(factory.allVisa);
 
                                     })
                                     return;
@@ -45,13 +49,15 @@ import { VisaModel } from "./models";
                             }
 
                             factory.allVisa = new Directory();
-
-                            let _visa_to_validate = new Directory();
-
-                            _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
-
-                            m.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
+                            m.add_file("__visa_to_validate__",factory.allVisa,{model_type : "Directory"});
                             initQ.resolve(factory.allVisa);
+
+                            // let _visa_to_validate = new Directory();
+
+                            // _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
+
+                            // m.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
+                            // initQ.resolve(factory.allVisa);
                             
                         })
                         
@@ -61,15 +67,20 @@ import { VisaModel } from "./models";
                     
                 }
 
-
                 factory.allVisa = new Directory();
                 let _visa = new Directory();
-                let _visa_to_validate = new Directory();
+
+                _visa.add_file("__visa_to_validate__",new Directory,{model_type : "Directory"});
+                data.add_file("__visa__",_visa,{model_type : "Directory"});
+
+                // factory.allVisa = new Directory();
+                // let _visa = new Directory();
+                // let _visa_to_validate = new Directory();
 
 
-                _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
-                _visa.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
-                data.add_file("__visa__",_visa ,{ model_type : "Directory"});
+                // _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
+                // _visa.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
+                // data.add_file("__visa__",_visa ,{ model_type : "Directory"});
 
 
                 initQ.resolve(factory.allVisa);
@@ -81,8 +92,7 @@ import { VisaModel } from "./models";
             return initQ.promise
         }
 
-        // factory.init();
-
+        factory.init();
 
         factory.addPluginInfo = (item,data,callback) => {
 
@@ -113,6 +123,7 @@ import { VisaModel } from "./models";
                 factory.addPluginInfo(item,data,() => {
                     visaStateFolder.load((data) => {
                         data.push(item);
+                        item._parents.splice(item._parents.indexOf(item),1);
                     })
                 })
                 
