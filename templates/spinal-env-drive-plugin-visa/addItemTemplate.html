@@ -1,0 +1,37 @@
+
+
+<md-dialog aria-label="addLink" style="padding : 30px;">
+    <h3>Send To Validate</h3>
+    <form ng-cloak>
+
+        <md-dialog-content class="myContainer">
+            
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>Visa state</label>
+                <md-select ng-model="visaSelected">
+                  <md-option ng-repeat="visa in allVisa" value="{{visa._server_id}}">
+                    {{visa.name}}
+                  </md-option>
+                </md-select>
+            </md-input-container>
+            
+
+            <md-input-container class="md-block">
+                <label>Message</label>
+                <textarea ng-model="message" rows="3"></textarea>
+            </md-input-container>
+
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button ng-click="cancel()">
+            Cancel
+            </md-button>
+            <md-button ng-click="answer()" class="md-primary">
+                OK
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>
