@@ -31,11 +31,19 @@
 </style>
 
 <div class="_container">
+
+    <div class="header_button">
+        <md-button class="md-fab" aria-label="add groupProcess" ng-click="addVisaStateValidation($event)">
+            <md-tooltip>Add Process</md-tooltip>
+            <ng-md-icon icon="note_add" style="fill:white; height: 24px;"></ng-md-icon>
+        </md-button>
+    </div>
+
     <header>
         <md-input-container class="md-block" flex-gt-sm>
             <label>Visa state</label>
             <md-select ng-model="visa_server_id" ng-change="selecteChange()">
-            <md-option ng-repeat="visa in allVisa" value="{{visa._server_id}}">
+            <md-option ng-repeat="visa in allVisa track by $index" value="{{visa._server_id}}">
                 {{visa.name}}
             </md-option>
             </md-select>
@@ -48,8 +56,8 @@
             <thead>
                 <tr>
                     <th style="width: 20%" title="name">Name</th>
-                    <th ng-repeat="i in [1,2,3,4,5,6,7,8,9,10]">
-                        {{i}}
+                    <th ng-repeat="visa in visaSelected._info.listVisaValidation">
+                        {{visa}}
                     </th>
                 </tr>
             </thead>
@@ -57,8 +65,8 @@
             <tbody ng-if="visa_server_id != -1">
                 <tr ng-if="visaSelectedContent.length > 0" ng-repeat="item in visaSelectedContent">
                     <td title="{{item.name}}">{{item.name}}</td>
-                    <td class="visaCheckbox" ng-repeat="j in [1,2,3,4,5,6,7,8,9,10]">
-                        <md-checkbox></md-checkbox>
+                    <td class="visaCheckbox" ng-repeat="j in item._info.visaValidation.validation">
+                        <md-checkbox ng-checked="j.valid" ng-model="j.valid" ng-change="checkCase(j._server_id,j)"></md-checkbox>
                     </td>
                 </tr>
             </tbody>

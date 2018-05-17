@@ -3,6 +3,8 @@ require('./visaManagerCtrl');
 require('./visaManagerService');
 require('./addItem');
 
+require('./models');
+
 
 (function () {
   angular.module('app.spinal-panel')
@@ -22,6 +24,9 @@ require('./addItem');
         },{
           uri : '../templates/spinal-env-drive-plugin-visa/addItemTemplate.html',
           name : 'addItemTemplate.html'
+        },{
+          uri : '../templates/spinal-env-drive-plugin-visa/addStateTemplate.html',
+          name : 'addStateTemplate.html'
         }];
 
 

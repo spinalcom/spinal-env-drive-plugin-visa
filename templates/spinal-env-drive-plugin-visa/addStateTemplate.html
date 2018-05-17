@@ -1,0 +1,46 @@
+
+
+<md-dialog aria-label="addLink" style="padding : 30px;">
+    <h3>Add Visa</h3>
+    <form ng-cloak>
+
+        <md-dialog-content class="myContainer">
+            
+            <md-input-container class="md-block" flex-gt-sm>
+                <label>name</label>
+                <input ng-model="name">
+            </md-input-container>
+            
+            <md-list>
+                <md-list-item ng-if="visaStates.length == 0">No State</md-list-item>
+                <md-list-item ng-repeat="item in visaStates">
+                    <p>{{item}}</p>
+                </md-list-item>
+            </md-list>
+
+
+            <div>
+                <md-input-container>
+                <label>Visa State</label>
+                <input ng-model="stateName">
+                </md-input-container>
+        
+                <md-input-container>
+                <md-button ng-click="addState()">Add</md-button>
+                </md-input-container>
+            </div>
+
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <md-button ng-click="cancel()">
+            Cancel
+            </md-button>
+            <md-button ng-click="answer()" class="md-primary">
+                OK
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

@@ -1,4 +1,3 @@
-import { VisaModel } from "./models";
 
 (function() {
     
@@ -94,24 +93,36 @@ import { VisaModel } from "./models";
 
         factory.init();
 
-        factory.addPluginInfo = (item,data,callback) => {
+
+        factory.addVisaState = (name,validList) => {   
+            var myDirectory = new Directory();
+
+            factory.allVisa.add_file(name,myDirectory,{listVisaValidation : validList});    
+
+        }
+
+        factory.addPluginInfo = (item,data,listModel,callback) => {
 
             if(!item._info.visaValidation) {
                 item._info.add_attr({
-                    visaValidation : new Ptr(new VisaModel(data.message,data.stateId))
+                    visaValidation : new VisaModel(data.message,data.stateId,listModel)
                 })
                 callback()
                 return;                
             }
             
-            item._info.visaValidation.load((element) => {
-                element.info.message.set(data.message);
-                element.info.state_id.set(data.stateId);
-                callback();
-            })
+            item._info.visaValidation.info.message.set(data.message);
+            item._info.visaValidation.info.state_id.set(data.stateId);
+            item._info.visaValidation.validation = listModel;
+            callback();
+
+            // item._info.visaValidation.load((element) => {
+                // element.info.message.set(data.message);
+                // element.info.state_id.set(data.stateId);
+                // element.validation = listModel;
+                // callback();
+            // })
         }
-
-
 
         factory.addItemToValidate = (data) => {
 
@@ -120,12 +131,13 @@ import { VisaModel } from "./models";
 
             if(visaStateFolder && item) {
                 
-                factory.addPluginInfo(item,data,() => {
-                    visaStateFolder.load((data) => {
-                        data.push(item);
+                factory.addPluginInfo(item,data,visaStateFolder._info.listVisaValidation,() => {
+                    visaStateFolder.load((data2) => {
+                        data2.push(item);
                         item._parents.splice(item._parents.indexOf(item),1);
                     })
                 })
+
                 
             }
 
