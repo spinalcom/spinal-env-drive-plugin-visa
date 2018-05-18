@@ -8,13 +8,18 @@
             
             <md-input-container class="md-block" flex-gt-sm>
                 <label>Visa state</label>
-                <md-select ng-model="visaSelected">
+                <md-select ng-model="visaSelected" ng-change="selectedChange(visaSelected)">
                   <md-option ng-repeat="visa in allVisa" value="{{visa._server_id}}">
                     {{visa.name}}
                   </md-option>
                 </md-select>
             </md-input-container>
             
+
+            <div class="displaySelect">
+
+            </div>
+
 
             <md-input-container class="md-block">
                 <label>Message</label>

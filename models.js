@@ -1,4 +1,15 @@
 
+var validModel = class validModel extends Model {
+    constructor(name) {
+        super();
+        this.add_attr({
+            name : name,
+            valid : false
+        })
+    }
+}
+
+module.exports.validModel = validModel;
 
 var VisaModel = class VisaModel extends Model {
 
@@ -7,7 +18,7 @@ var VisaModel = class VisaModel extends Model {
         var x = new Lst();
         if(myList) {
             for (var i = 0; i < myList.length; i++) {
-                var obj = {name : myList[i],valid : new Bool(false)};
+                var obj = new validModel(myList[i]);
                 x.push(obj);
             }
         }
@@ -17,7 +28,8 @@ var VisaModel = class VisaModel extends Model {
                 message : message,
                 state_id : state_id
             },
-            validation : x
+            validation : x,
+            isValid : false
         });
     }
 };
