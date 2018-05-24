@@ -41,68 +41,70 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.allVisa = data;
             })
 
-            $scope.visaSelected;
-            $scope.message;
+            $scope.nbrSelect = 0;
 
-            $scope.selects = [];
+            $scope.subVisaChanged = function(value,order) {
+                var parent = document.getElementsByClassName("displaySelect")[0];
 
-
-            $scope.isDirectory = (element) => {
-                for (var i = 0; i < element.length; i++) {
-                  if(element[i]._info.model_type == "Directory") {
-                    return true;
-                  }
+                if(order < $scope.nbrSelect) {
+                    for (var i = order; i < $scope.nbrSelect; i++) {
+                        var doc = document.getElementById("select_" + i);
+                        doc.parentNode.removeChild(doc);
+                        $scope.nbrSelect -= 1;
+                    }
+                } else {
+                    var content = angular.element(parent);
+                    $scope.addSelect(content,parseInt(value),order);
                 }
-                return false;
+
             }
-    
-            $scope.addContent = (parent,element) => {
-                var html = `<md-input-container class="md-block" flex-gt-sm>
-                <label>Name</label>
-                <md-select ng-model="x" ng-change="">`;
-                if($scope.isDirectory(element)) {
-                  
+            
+
+            $scope.addSelect = (parent,visaSelected,order) => {
                 
-                for (var i = 0; i < element.length; i++) {
-                    html += `<md-option value="${element[i]._server_id}">
-                                ${element[i].name}
-                            </md-option>`;
-                }
-                    
+                var subVisa = FileSystem._objects[visaSelected]._info.subvisaPlugin;
+                
+                if(subVisa) {
+                    $scope.nbrSelect += 1;
+                    FileSystem._objects[visaSelected].load((data) => {
 
-                            
-                html +=`</md-select>
-                    </md-input-container>`;
+                        var html = `
+                        <md-input-container id="select_${order}" class="md-block" flex-gt-sm>
+                            <label>Name</label>
+                            <md-select ng-model="x_${order}" ng-change="subVisaChanged(this.x_${order},${order + 1})">`;
+
+                        for (var i = 0; i < data.length; i++) {
+                            html += `<md-option value="${data[i]._server_id}">
+                                        ${data[i].name.get()}
+                                    </md-option>`
+                        }
+
+
+                        html +=`</md-select>
+                            </md-input-container>`;
+
                     
-                    
-                var _content = angular.element(html);
-                parent.append(_content);
-        
-                $compile(_content)($rootScope);
-        
+                        var _content = angular.element(html);
+                        parent.append(_content);
+                
+                        $compile(_content)($scope);
+
+
+                    })
+               
                 }
             }
 
-            $scope.selectedChange = (el) => {
-                var mod = FileSystem._objects[el];
 
-                if(mod) {
-                    mod.load((element) => {
-                        var displaySelect = document.getElementsByClassName("displaySelect")[0];
-                        var content = angular.element(displaySelect);
-                    
-                        $compile(content)($rootScope);
+            $scope.selectedChange = (visaSelected) => {
+                var parent = document.getElementsByClassName("displaySelect")[0];
+                parent.innerHTML = "";
 
-                        $scope.addContent(content,element);
-                    })
-                }
+                var content = angular.element(parent);
+                $compile(content)($scope);
 
-                // var displaySelect = document.getElementsByClassName("displaySelect")[0];
-                // var content = angular.element(displaySelect);
-              
-                // $compile(content)($rootScope)
+                $scope.addSelect(content,visaSelected,0);
 
-                // $scope.addContent(content,element);
             }
 
 
@@ -111,7 +113,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
             }
 
             $scope.answer = function() {
-                $mdDialog.hide({stateId : parseInt($scope.visaSelected) , itemId : obj.file._server_id, message : $scope.message});
+                $mdDialog.hide();
             }
 
 

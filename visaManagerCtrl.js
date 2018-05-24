@@ -1,4 +1,3 @@
-
 (function(){
     angular.module('app.spinal-panel')
     .controller('visaManagerCtrl',['$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile",function($scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile){
@@ -92,7 +91,6 @@
           listValidation.isValid.set(true);
 
         }
-
 
     }])
 })();

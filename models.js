@@ -32,7 +32,7 @@ var VisaModel = class VisaModel extends Model {
             isValid : false
         });
     }
-};
+}
 
 module.exports.VisaModel = VisaModel;
 
@@ -53,3 +53,16 @@ var VisaStateModel = class VisaStateModel extends Model {
 }
 
 module.exports.VisaStateModel = VisaStateModel;
+
+
+var SubVisaModel = class  SubVisaModel extends Model {
+    constructor(name,id) {
+        super();
+        this.add_attr({
+            name : name,
+            id : id
+        })
+    }
+}
+
+module.exports.SubVisaModel = SubVisaModel;
