@@ -41,37 +41,45 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.allVisa = data;
             })
 
+            $scope.message = "no Message !";
+            $scope.visa = -1;
             $scope.nbrSelect = 0;
+            $scope.formValid = false;
+
+            
 
             $scope.subVisaChanged = function(value,order) {
                 var parent = document.getElementsByClassName("displaySelect")[0];
+                var content = angular.element(parent);
+                $scope.visa = parseInt(value);
 
                 if(order < $scope.nbrSelect) {
                     for (var i = order; i < $scope.nbrSelect; i++) {
                         var doc = document.getElementById("select_" + i);
                         doc.parentNode.removeChild(doc);
-                        $scope.nbrSelect -= 1;
                     }
-                } else {
-                    var content = angular.element(parent);
-                    $scope.addSelect(content,parseInt(value),order);
-                }
-
+                    $scope.nbrSelect = order;
+                }       
+                
+                $scope.addSelect(content,parseInt(value),order);
+                
             }
             
 
             $scope.addSelect = (parent,visaSelected,order) => {
                 
                 var subVisa = FileSystem._objects[visaSelected]._info.subvisaPlugin;
-                
+
                 if(subVisa) {
                     $scope.nbrSelect += 1;
+                    $scope.formValid = false;
+
                     FileSystem._objects[visaSelected].load((data) => {
 
                         var html = `
-                        <md-input-container id="select_${order}" class="md-block" flex-gt-sm>
+                        <md-input-container id="select_${order}" class="input_header md-block" flex-gt-sm>
                             <label>Name</label>
-                            <md-select ng-model="x_${order}" ng-change="subVisaChanged(this.x_${order},${order + 1})">`;
+                            <md-select required ng-model="x_${order}" ng-change="subVisaChanged(this.x_${order},${order + 1})">`;
 
                         for (var i = 0; i < data.length; i++) {
                             html += `<md-option value="${data[i]._server_id}">
@@ -92,6 +100,8 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
                     })
                
+                } else {
+                    $scope.formValid = true;
                 }
             }
 
@@ -113,7 +123,8 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
             }
 
             $scope.answer = function() {
-                $mdDialog.hide();
+                var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id}
+                $mdDialog.hide(result);
             }
 
 

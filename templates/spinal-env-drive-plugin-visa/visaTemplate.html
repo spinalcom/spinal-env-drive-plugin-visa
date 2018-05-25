@@ -42,8 +42,6 @@
             <md-tooltip>Add Process</md-tooltip>
             <ng-md-icon icon="note_add" style="fill:white; height: 24px;"></ng-md-icon>
         </md-button>
-
-        <md-button ng-click="addTest()">Test</md-button>
     </div>
 
     <header>
@@ -55,15 +53,20 @@
             </md-option>
             </md-select>
         </md-input-container>
+
+        <div id="selects">
+            
+        </div>
+
     </header>
 
     <section>
 
-        <table class="visaTable" ng-if="visa_server_id != -1">
+        <table class="visaTable" ng-if="displayTable">
             <thead>
                 <tr>
                     <th style="width: 20%" title="name">Name</th>
-                    <th ng-repeat="visa in visaSelected._info.listVisaValidation">
+                    <th ng-repeat="visa in visaFolder._info.listVisaValidation">
                         {{visa}}
                     </th>
                     <th class="td_valid">Valid</th>
