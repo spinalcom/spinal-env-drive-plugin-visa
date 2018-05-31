@@ -71,8 +71,8 @@
                 for (var i = order; i < $scope.nbrSelect; i++) {
                     var doc = document.getElementById("mySelect_" + i);
                     doc.parentNode.removeChild(doc);
-                    $scope.nbrSelect -= 1;
                 }
+                $scope.nbrSelect = order;
             }       
             
             $scope.addSelect(content,parseInt(value),order);
@@ -132,6 +132,12 @@
 
           var content = angular.element(parent);
           $compile(content)($scope);
+
+          $scope.nbrSelect = 0;
+
+          if($scope.x_0) {
+            $scope.x_0 = undefined;
+          }
 
           $scope.addSelect(content,$scope.visa_server_id,0);
 

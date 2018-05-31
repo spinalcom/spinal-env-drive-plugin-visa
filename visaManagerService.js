@@ -8,6 +8,8 @@
         let user = authService.get_user();
         var initQ;
 
+        factory.listPromise = new Lst();
+
         factory.init = () => {
             if(initQ) {
                return initQ.promise; 
@@ -91,7 +93,47 @@
             return initQ.promise
         }
 
+
         factory.init();
+
+
+        factory.getFolderItem = (item) => {
+            if(item._info.subvisaPlugin) {
+
+                item.load((data) => {
+                    for (var i = 0; i < data.length; i++) {
+                        factory.getFolderItem(data[i]);
+                    }
+                })
+
+            } else {
+                factory.listPromise.push(new Promise(function (resolve,reject) {
+                    item.load((data) => {
+                        resolve(data);
+                    },() => {
+                        reject("error !");
+                    })
+                }));
+            }
+        }
+
+        factory.getAllItemInvalidation = () => {
+
+            factory.listPromise = [];
+
+            return new Promise(function(resolve,reject) {
+
+                for (var i = 0; i < factory.allVisa.length; i++) {
+                    factory.getFolderItem(factory.allVisa[i]);
+                }
+
+                setTimeout(() => {
+                    resolve(factory.listPromise);
+                }, 1000);
+            })
+            
+
+        }
 
 
         factory.addVisaState = (name,validList) => {   
@@ -101,11 +143,14 @@
 
         }
 
-        factory.addPluginInfo = (item,data,listModel,callback) => {
+
+        factory.addPluginInfo = (item,path,data,listModel,callback) => {
 
             if(!item._info.visaValidation) {
                 item._info.add_attr({
-                    visaValidation : new VisaModel(data.message,data.stateId,listModel)
+                    visaValidation : new VisaModel(data.message,data.stateId,listModel),
+                    path : path,
+                    date : Date.now()
                 })
                 callback()
                 return;                
@@ -114,6 +159,8 @@
             item._info.visaValidation.info.message.set(data.message);
             item._info.visaValidation.info.state_id.set(data.stateId);
             item._info.visaValidation.validation = listModel;
+            item._info.path.set(path);
+            item._info.date.set(Date.now());
             callback();
 
             // item._info.visaValidation.load((element) => {
@@ -124,14 +171,15 @@
             // })
         }
 
-        factory.addItemToValidate = (data) => {
+
+        factory.addItemToValidate = (data,path) => {
 
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
 
             if(visaStateFolder && item) {
                 
-                factory.addPluginInfo(item,data,visaStateFolder._info.listVisaValidation,() => {
+                factory.addPluginInfo(item,path,data,visaStateFolder._info.listVisaValidation,() => {
                     visaStateFolder.load((data2) => {
                         data2.push(item);
                         item._parents.splice(item._parents.indexOf(item),1);

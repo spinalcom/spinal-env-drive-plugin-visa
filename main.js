@@ -3,6 +3,9 @@ require('./visaManagerCtrl');
 require('./visaManagerService');
 require('./addItem');
 
+require('./adminVisaManagerCtrl');
+require('./adminVisaManagerService');
+
 require('./models');
 
 
@@ -27,6 +30,9 @@ require('./models');
         },{
           uri : '../templates/spinal-env-drive-plugin-visa/addStateTemplate.html',
           name : 'addStateTemplate.html'
+        },{
+          uri : '../templates/spinal-env-drive-plugin-visa/adminVisaTemplate.html',
+          name : 'adminVisaTemplate.html'
         }];
 
 
@@ -47,6 +53,23 @@ require('./models');
               template: 'visaTemplate.html',
               module: 'app.spinal-visa',
               controller: 'visaManagerCtrl'
+            }
+          }
+        });
+
+        goldenLayoutService.registerPanel({
+          id: "spinal-env-drive-plugin-admin-visa",
+          name: "Admin Visa",
+          cfg: {
+            isClosable: true,
+            title: "Admin Visa",
+            type: 'component',
+            width: 50,
+            componentName: 'SpinalHome',
+            componentState: {
+              template: 'adminVisaTemplate.html',
+              module: 'app.spinal-visa',
+              controller: 'adminVisaManagerCtrl'
             }
           }
         });

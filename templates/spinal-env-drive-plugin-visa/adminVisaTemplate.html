@@ -1,0 +1,74 @@
+
+<style>
+
+    .content {
+        padding: 10px;
+    }
+
+    .visaTable {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .visaTable thead {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .visaTable thead, .visaTable tr,.visaTable td{
+        height: 50px;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid #ddd;
+    }
+
+</style>
+
+<div class="content">
+    <div class="search">
+        <md-input-container class="md-block">
+            <label>Search</label>
+            <input />
+        </md-input-container>
+    </div>
+
+
+    <div class="table">
+
+        <table class="visaTable" style="width: 100%">
+            <thead>
+                <tr>
+                    <th style="width: 10%" title="name">Name</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th style="width: 30%" title="Path">Path</th>
+                    <th style="width: 10%" title="Path">Date</th>
+                    <th style="width: 10%" title="Path">State</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr ng-repeat="item in allItems">
+                    <td>{{item.name.get()}}</td>
+
+                    <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
+                        <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                    </td>
+
+                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+
+                    <td>{{item._info.path.get()}}</td>
+                    <td>{{item._info.date.get() | date}}</td>
+
+                    <td class="td_valid visaCheckbox">
+                        <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+    </div>
+</div>

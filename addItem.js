@@ -25,7 +25,6 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
    action(obj) {
     let _self = this;
-       
     let $mdDialog =  obj.scope.injector.get('$mdDialog');
     let $templateCache = obj.scope.injector.get('$templateCache');
     let visaManagerService = obj.scope.injector.get('visaManagerService');
@@ -52,6 +51,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 var parent = document.getElementsByClassName("displaySelect")[0];
                 var content = angular.element(parent);
                 $scope.visa = parseInt(value);
+
 
                 if(order < $scope.nbrSelect) {
                     for (var i = order; i < $scope.nbrSelect; i++) {
@@ -110,6 +110,8 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 var parent = document.getElementsByClassName("displaySelect")[0];
                 parent.innerHTML = "";
 
+                $scope.nbrSelect = 0;
+
                 var content = angular.element(parent);
                 $compile(content)($scope);
 
@@ -124,7 +126,17 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
             $scope.answer = function() {
                 var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id}
+                
+                result["path"] = "/" + FileSystem._objects[$scope.visaSelected].name.get();
+
+                for (var i = 0; i < $scope.nbrSelect; i++) {
+                    result["path"] += "/" + FileSystem._objects[eval(`$scope.x_${i}`)].name.get()
+                }
+                
+                result.path += "/" + obj.file.name;
+
                 $mdDialog.hide(result);
+
             }
 
 
@@ -134,7 +146,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
         targetEvent : obj.evt,
         clickOutsideToClose : true
       }).then((result) => {
-        visaManagerService.addItemToValidate(result);
+        visaManagerService.addItemToValidate(result,result.path);
 
       },() => {
           console.log("error");
