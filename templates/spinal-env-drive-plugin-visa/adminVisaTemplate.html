@@ -1,9 +1,6 @@
 
 <style>
 
-    .content {
-        padding: 10px;
-    }
 
     .visaTable {
         table-layout: fixed;
@@ -20,55 +17,142 @@
         border-bottom: 1px solid #ddd;
     }
 
+    .myContainer {
+        width: 100%;
+        height: 100%;
+    }
+
+    .visaCheckbox {
+        text-align: center;
+        padding-top: 15px;
+    }
+
 </style>
 
-<div class="content">
-    <div class="search">
-        <md-input-container class="md-block">
-            <label>Search</label>
-            <input />
-        </md-input-container>
+
+<md-content class="myContainer md-padding">
+    <md-nav-bar nav-bar-aria-label="navigation links">
+        <md-nav-item md-nav-click="goto(1)" name="page1">
+            FileList
+        </md-nav-item>
+
+        <md-nav-item md-nav-click="goto(2)" name="page2">
+            Folder organization
+        </md-nav-item>
+
+        <md-nav-item md-nav-click="goto(3)" name="page3">
+            Validation item
+        </md-nav-item>
+
+    </md-nav-bar>
+
+
+
+    <div class="content" ng-if="currentPage == 1">
+        <div class="search">
+            <md-input-container class="md-block">
+                <label>Search</label>
+                <input />
+            </md-input-container>
+        </div>
+
+
+        <div class="table">
+
+            <table class="visaTable" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th style="width: 10%" title="name">Name</th>
+                        <th style="width: 30%" title="Path">Path</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        
+                        <th style="width: 10%" title="Path">Date</th>
+                        <th style="width: 10%" title="Path">%</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr ng-repeat="item in allItems">
+                        <td>{{item.name.get()}}</td>
+                        <td>{{item._info.path.get()}}</td>
+                        <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
+                            <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                        </td>
+
+                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
+
+                        
+                        <td>{{item._info.date.get() | date}}</td>
+
+                        <td>
+                            {{item._info.visaValidation.isValid.get()}} %
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
     </div>
 
 
-    <div class="table">
 
-        <table class="visaTable" style="width: 100%">
-            <thead>
-                <tr>
-                    <th style="width: 10%" title="name">Name</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th style="width: 30%" title="Path">Path</th>
-                    <th style="width: 10%" title="Path">Date</th>
-                    <th style="width: 10%" title="Path">State</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                <tr ng-repeat="item in allItems">
-                    <td>{{item.name.get()}}</td>
-
-                    <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
-                        <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
-                    </td>
-
-                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-                    <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-
-                    <td>{{item._info.path.get()}}</td>
-                    <td>{{item._info.date.get() | date}}</td>
-
-                    <td class="td_valid visaCheckbox">
-                        <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox>
-                    </td>
-                </tr>
-
-            </tbody>
-        </table>
-
-
+    <div class="content" ng-if="currentPage == 2">
+        <folder-organization tree-plugins="contextmenu,dnd"
+        tree-contextmenu="contextMenu"
+        disableSelect-contextmenu
+        tree-data="scope"
+        tree-model="fsdir"
+        tree-core="treeCore"
+        tree-events="select_node:onChangeNodeTree;open_node:onChangeNodeTree;close_node:onChangeNodeTree"
+        tree-binds="dblclick.jstree:onbdlclick"></folder-organization>
     </div>
-</div>
+
+
+
+    <div class="content" ng-if="currentPage == 3">
+        <div class="table">
+
+            <table class="visaTable" style="width: 100%">
+                <thead>
+                    <tr>
+                        <th style="width: 20%" title="name">Name</th>
+                        <th style="width: 40%" title="Path">Desription</th>
+                        <th style="width: 20%" title="Permission">Permission</th>
+                        <th style="width: 20%"></th>        
+                    </tr>
+                </thead>
+
+                <tbody>  
+                    <tr ng-repeat="item in allItems">
+                        <td>{{item.name.get()}}</td>
+                        <td>{{item._info.visaValidation.info.message.get()}}</td>
+                        <td></td>
+                        <td>
+                            <md-menu md-offset="0 -7">
+                                <md-button aria-label="Open demo menu" ng-click="$mdMenu.open($event)">
+                                    <i class="fa fa-ellipsis-v"></i>
+                                </md-button>
+                                <md-menu-content width="2">
+                                    <md-menu-item>
+                                        <md-button ng-click="">
+                                            <i class="fa fa-pencil"></i>
+                                            Edit
+                                        </md-button>
+                                    </md-menu-item>
+                                </md-menu-content>
+                            </md-menu>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+</md-content>

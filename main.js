@@ -3,6 +3,8 @@ require('./visaManagerCtrl');
 require('./visaManagerService');
 require('./addItem');
 
+require('./folder.directive');
+
 require('./adminVisaManagerCtrl');
 require('./adminVisaManagerService');
 

@@ -29,7 +29,7 @@ var VisaModel = class VisaModel extends Model {
                 state_id : state_id
             },
             validation : x,
-            isValid : false
+            isValid : 0
         });
     }
 }
