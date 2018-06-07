@@ -67,7 +67,6 @@
                         <th></th>
                         <th></th>
                         <th></th>
-                        
                         <th style="width: 10%" title="Path">Date</th>
                         <th style="width: 10%" title="Path">%</th>
                     </tr>
@@ -76,7 +75,7 @@
                 <tbody>
                     <tr ng-repeat="item in allItems">
                         <td>{{item.name.get()}}</td>
-                        <td>{{item._info.path.get()}}</td>
+                        <td>{{item._info.visaValidation.path.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
                             <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
@@ -86,7 +85,7 @@
                         <td ng-if="item._info.visaValidation.validation.length == 0"></td>
 
                         
-                        <td>{{item._info.date.get() | date}}</td>
+                        <td>{{item._info.visaValidation.date.get() | date}}</td>
 
                         <td>
                             {{item._info.visaValidation.isValid.get()}} %
@@ -130,22 +129,12 @@
                 <tbody>  
                     <tr ng-repeat="item in allItems">
                         <td>{{item.name.get()}}</td>
-                        <td>{{item._info.visaValidation.info.message.get()}}</td>
+                        <td>{{item._info.visaValidation.message.get()}}</td>
                         <td></td>
                         <td>
-                            <md-menu md-offset="0 -7">
-                                <md-button aria-label="Open demo menu" ng-click="$mdMenu.open($event)">
-                                    <i class="fa fa-ellipsis-v"></i>
-                                </md-button>
-                                <md-menu-content width="2">
-                                    <md-menu-item>
-                                        <md-button ng-click="">
-                                            <i class="fa fa-pencil"></i>
-                                            Edit
-                                        </md-button>
-                                    </md-menu-item>
-                                </md-menu-content>
-                            </md-menu>
+                            <md-button ng-click="editFileInfo($event,item)">
+                                <i class="fa fa-pencil"></i>
+                            </md-button>
                         </td>
                     </tr>
                 </tbody>

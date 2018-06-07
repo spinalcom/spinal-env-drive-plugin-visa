@@ -65,8 +65,8 @@
                         <td ng-if="item._info.visaValidation.validation.length == 0"></td>
                         <td ng-if="item._info.visaValidation.validation.length == 0"></td>
 
-                        <td>{{item._info.path.get()}}</td>
-                        <td>{{item._info.date.get() | date}}</td>
+                        <td>{{item._info.visaValidation.path.get()}}</td>
+                        <td>{{item._info.visaValidation.date.get() | date}}</td>
 
                         <td class="visaCheckbox">
                             <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox>
@@ -75,8 +75,6 @@
 
                 </tbody>
             </table>
-
-
         </div>
     </div>
 </md-content>

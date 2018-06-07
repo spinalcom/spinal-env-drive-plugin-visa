@@ -148,9 +148,7 @@
 
             if(!item._info.visaValidation) {
                 item._info.add_attr({
-                    visaValidation : new VisaModel(data.message,data.stateId,listModel),
-                    path : path,
-                    date : Date.now()
+                    visaValidation : new VisaModel(data.message,data.stateId,listModel,path,Date.now()),
                 })
                 callback()
                 return;                
@@ -159,16 +157,10 @@
             item._info.visaValidation.info.message.set(data.message);
             item._info.visaValidation.info.state_id.set(data.stateId);
             item._info.visaValidation.validation = listModel;
-            item._info.path.set(path);
-            item._info.date.set(Date.now());
+            item._info.visaValidation.path.set(path);
+            item._info.visaValidation.date.set(Date.now());
             callback();
 
-            // item._info.visaValidation.load((element) => {
-                // element.info.message.set(data.message);
-                // element.info.state_id.set(data.stateId);
-                // element.validation = listModel;
-                // callback();
-            // })
         }
 
 
@@ -190,7 +182,7 @@
             }
 
         }
-
+        
         
 
 

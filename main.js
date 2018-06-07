@@ -35,6 +35,9 @@ require('./models');
         },{
           uri : '../templates/spinal-env-drive-plugin-visa/adminVisaTemplate.html',
           name : 'adminVisaTemplate.html'
+        },{
+          uri : '../templates/spinal-env-drive-plugin-visa/permissionTemplate.html',
+          name : 'permissionTemplate.html'
         }];
 
 
@@ -66,7 +69,7 @@ require('./models');
             isClosable: true,
             title: "Admin Visa",
             type: 'component',
-            width: 50,
+            width: 500,
             componentName: 'SpinalHome',
             componentState: {
               template: 'adminVisaTemplate.html',

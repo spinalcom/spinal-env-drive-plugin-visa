@@ -1,0 +1,56 @@
+
+<style>
+    .myContainer {
+        width: 500px;
+        height: 500px;
+        padding: 10px;
+    }
+
+    .myContainer .title {
+        text-align: center;
+        font-size: 2em;
+    }
+
+    .dialogContent {
+        height: 90%;
+    }
+
+    .caseCoche {
+        display: inline-block;
+        margin-right: 20px;
+    }
+
+</style>
+
+<md-dialog class="myContainer" aria-label="addLink">
+    <md-dialog-content class="dialogContent">
+        <div class="title">
+            EDIT
+        </div>
+
+    
+        <md-input-container md-no-float class="md-block">
+            <input placeholder="Username">
+        </md-input-container>
+
+        <h3>Can Validate</h3>
+
+        <md-input-container class="caseCoche" ng-repeat="case in Cases">
+            <md-checkbox ng-model="case.value">
+                {{case.name}}
+            </md-checkbox>
+        </md-input-container>
+
+
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <md-button ng-click="cancel()">
+        Cancel
+        </md-button>
+        <md-button class="md-primary">
+            OK
+        </md-button>
+    </md-dialog-actions>
+
+</md-dialog>

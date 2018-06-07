@@ -13,7 +13,7 @@ module.exports.validModel = validModel;
 
 var VisaModel = class VisaModel extends Model {
 
-    constructor(message,state_id,myList) {
+    constructor(message,state_id,myList,path,date) {
         super();
         var x = new Lst();
         if(myList) {
@@ -24,11 +24,11 @@ var VisaModel = class VisaModel extends Model {
         }
         
         this.add_attr({
-            info : {
-                message : message,
-                state_id : state_id
-            },
+            state_id : state_id,
+            message : message,
             validation : x,
+            path : path,
+            date : date,
             isValid : 0
         });
     }
