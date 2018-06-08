@@ -23,8 +23,13 @@
     }
 
     .visaCheckbox {
-        text-align: center;
+        /* text-align: center; */
         padding-top: 15px;
+    }
+
+    .myBtn {
+        margin-top: 30px;
+        margin-bottom: 30px;
     }
 
 </style>
@@ -64,9 +69,7 @@
                     <tr>
                         <th style="width: 10%" title="name">Name</th>
                         <th style="width: 30%" title="Path">Path</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th ng-repeat="case in myAllCases">{{case.name.get() | uppercase}}</th>
                         <th style="width: 10%" title="Path">Date</th>
                         <th style="width: 10%" title="Path">%</th>
                     </tr>
@@ -79,11 +82,6 @@
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
                             <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
-
-                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-                        <td ng-if="item._info.visaValidation.validation.length == 0"></td>
-
                         
                         <td>{{item._info.visaValidation.date.get() | date}}</td>
 
@@ -114,6 +112,12 @@
 
 
     <div class="content" ng-if="currentPage == 3">
+
+            <md-button class="myBtn md-raised" ng-click="editFileInfo($event)">
+                <i class="fa fa-plus"></i>
+                Add Validation Case
+            </md-button>
+
         <div class="table">
 
             <table class="visaTable" style="width: 100%">
@@ -122,18 +126,24 @@
                         <th style="width: 20%" title="name">Name</th>
                         <th style="width: 40%" title="Path">Desription</th>
                         <th style="width: 20%" title="Permission">Permission</th>
-                        <th style="width: 20%"></th>        
+                        <th style="width: 20%"></th>   
+                        <th style="width: 20%"></th>     
                     </tr>
                 </thead>
 
                 <tbody>  
-                    <tr ng-repeat="item in allItems">
-                        <td>{{item.name.get()}}</td>
-                        <td>{{item._info.visaValidation.message.get()}}</td>
-                        <td></td>
+                    <tr ng-repeat="myCase in myAllCases">
+                        <td>{{myCase.name}}</td>
+                        <td>{{myCase.description}}</td>
+                        <td>{{myCase.users}}</td>
                         <td>
-                            <md-button ng-click="editFileInfo($event,item)">
+                            <md-button ng-click="editFileInfo($event,myCase)">
                                 <i class="fa fa-pencil"></i>
+                            </md-button>
+                        </td>
+                        <td>
+                            <md-button ng-click="deleteValidationCase(myCase)">
+                                <i class="fa fa-trash"></i>
                             </md-button>
                         </td>
                     </tr>

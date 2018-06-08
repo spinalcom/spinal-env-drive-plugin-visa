@@ -5,7 +5,11 @@
     $scope.currentPage = 1;
 
     let init = visaManagerService.init()
+    let allCase = visaManagerService.getAllCase();
+
+
     $scope.allItems = [];
+
     init.then(() => {
         visaManagerService.getAllItemInvalidation()
         .then((el) => {
@@ -28,6 +32,13 @@
 
         })
 
+    })
+
+    allCase.then(() => {
+        visaManagerService.allCases.bind(() => {
+            console.log("yes")
+            $scope.myAllCases = visaManagerService.allCases;
+        })
     })
 
     $scope.checkCase = (id,listValidation) => {
@@ -278,28 +289,44 @@
     });
     
 
-
     $scope.editFileInfo = (ev,item) => {
+
         $mdDialog.show({
             controller: ["$scope",($scope) => {
-                
-                $scope.Cases = [];
 
-                for (var i = 0; i < item._info.visaValidation.validation.length; i++) {
-                    var obj = {};
-                    var x = item._info.visaValidation.validation[i];
-                    obj["name"] = x.name.get();
-                    obj["value"] = false;
-                    $scope.Cases.push(obj);
+                if(item) { 
+                    $scope.title = "edit case";
+                    $scope.name = item.name.get();
+                    $scope.description = item.description.get();
+                    $scope.id = item.id.get();
+                    $scope.users = item.users.get();
+                } else {
+                    $scope.title = "Add case";
+                    $scope.name = ""
+                    $scope.description = ""
+                    $scope.users = []; 
                 }
 
+
+                $scope.deleteUser = (id) => {
+                    for (var i = 0; i < $scope.users.length; i++) {
+                        if($scope.users[i].id == id) {
+                            $scope.users.splice(i,1);
+                            break;
+                        }
+                    }
+                }
 
                 $scope.cancel = function() {
                     $mdDialog.cancel();
                 }
     
                 $scope.answer = function() {
-    
+                    var result = {id : $scope.id, name : $scope.name, description : $scope.description, users : $scope.users };
+
+                    if($scope.name.trim().length > 0 && $scope.name.trim().length <= 4) {
+                        $mdDialog.hide(result);
+                    }
                 }
     
     
@@ -311,14 +338,32 @@
           })
             .then(function(answer) {
                 
+                visaManagerService.AddValidationCase(answer);
 
 
             }, () => {});
     }
 
 
+    $scope.deleteValidationCase = (myCase) => {
+
+        var confirm = $mdDialog.confirm()
+        .title('Remove !')
+        .textContent('Do you want remove it ?')
+        .ariaLabel('remove')
+        .ok('Yes')
+        .cancel('No');
+
+        $mdDialog.show(confirm).then(() => {
+            for (var i = 0; i < visaManagerService.allCases.length; i++) {
+                if(visaManagerService.allCases[i].id.get() == myCase.id.get()) {
+                    visaManagerService.allCases.splice(i,1);
+                }
+            }
+        },() => {});
+    }
     
 
-
+    
     }])
 })();

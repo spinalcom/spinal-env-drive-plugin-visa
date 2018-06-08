@@ -66,3 +66,20 @@ var SubVisaModel = class  SubVisaModel extends Model {
 }
 
 module.exports.SubVisaModel = SubVisaModel;
+
+
+
+var CaseValidation = class CaseValidation extends Model {
+    constructor(id) {
+        super();
+        this.add_attr({
+            id : id,
+            name : "",
+            description : "",
+            users : new Lst()
+        })
+    }
+}
+
+
+module.exports.CaseValidation = CaseValidation;

@@ -44,9 +44,7 @@
                 <thead>
                     <tr>
                         <th style="width: 10%" title="name">Name</th>
-                        <th>Invalid</th>
-                        <th>Encours de validation</th>
-                        <th>Valid</th>
+                        <th ng-repeat="header in headerList">{{header.name.get() | uppercase}}</th>
                         <th style="width: 30%" title="Path">Path</th>
                         <th style="width: 10%" title="Path">Date</th>
                         <th style="width: 10%" title="Path">State</th>
@@ -69,7 +67,8 @@
                         <td>{{item._info.visaValidation.date.get() | date}}</td>
 
                         <td class="visaCheckbox">
-                            <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox>
+                            <!-- <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox> -->
+                            {{item._info.visaValidation.isValid.get()}} %
                         </td>
                     </tr>
 

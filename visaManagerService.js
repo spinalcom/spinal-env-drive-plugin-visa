@@ -7,13 +7,21 @@
         let factory = {};
         let user = authService.get_user();
         var initQ;
+        var itemQ;
 
         factory.listPromise = new Lst();
+        factory.allCases;
 
         factory.init = () => {
+            console.log("start init");
+            
             if(initQ) {
+                console.log("init extst");
+                
                return initQ.promise; 
             }
+
+
             initQ = $q.defer()
             ngSpinalCore.load_root()
             .then((data) => {
@@ -22,43 +30,10 @@
                 for (var i = 0; i < data.length; i++) {
                     if(data[i].name.get() == "__visa__") {
                         data[i].load((m) => {
-                            for (var j = 0; j < m.length; j++) {
-                                if(m[j].name.get() == "__visa_to_validate__") {
-                                    m[j].load((el) => {
-
-                                    factory.allVisa = el;
-                                    initQ.resolve(el);
-
-                                        // for (var k = 0; k < el.length; k++) {
-                                        //     if(el[k].name.get() == user.username) {
-                                        //         el[k].load((el2) => {
-                                        //             factory.allVisa = el2;
-                                        //             initQ.resolve(el2);
-                                        //         })
-
-                                        //         return;
-                                        //     }
-                                        // }
-
-                                        // factory.allVisa = new Directory();
-                                        // el.add_file(user.username,new Directory(),{model_type : "Directory"})
-                                        // initQ.resolve(factory.allVisa);
-
-                                    })
-                                    return;
-                                }
-                            }
-
-                            factory.allVisa = new Directory();
-                            m.add_file("__visa_to_validate__",factory.allVisa,{model_type : "Directory"});
+                            console.log("m",m);
+                            factory.allVisa = m;
+                            console.log("factory.init",factory.allVisa);
                             initQ.resolve(factory.allVisa);
-
-                            // let _visa_to_validate = new Directory();
-
-                            // _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
-
-                            // m.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
-                            // initQ.resolve(factory.allVisa);
                             
                         })
                         
@@ -71,30 +46,30 @@
                 factory.allVisa = new Directory();
                 let _visa = new Directory();
 
-                _visa.add_file("__visa_to_validate__",new Directory,{model_type : "Directory"});
                 data.add_file("__visa__",_visa,{model_type : "Directory"});
-
-                // factory.allVisa = new Directory();
-                // let _visa = new Directory();
-                // let _visa_to_validate = new Directory();
-
-
-                // _visa_to_validate.add_file(user.username,new Directory(),{model_type : "Directory"})
-                // _visa.add_file("__visa_to_validate__",_visa_to_validate,{model_type : "Directory"});
-                // data.add_file("__visa__",_visa ,{ model_type : "Directory"});
-
-
+                console.log("xcvsvf")
                 initQ.resolve(factory.allVisa);
 
+            },() => { })
+            console.log("init exist 2");
+            
+            return initQ.promise;
 
-            },() => {
-            })
-
-            return initQ.promise
+            
         }
 
+        factory.init().then(() => {});
 
-        factory.init();
+
+        factory.newGuid = () => {
+            var d = new Date().getTime();
+            var guid = 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, function (c) {
+                var r = (d + Math.random() * 16) % 16 | 0;
+                d = Math.floor(d / 16);
+                return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+            });
+            return guid;
+        };
 
 
         factory.getFolderItem = (item) => {
@@ -122,7 +97,7 @@
             factory.listPromise = [];
 
             return new Promise(function(resolve,reject) {
-
+                console.log("get All item ")
                 for (var i = 0; i < factory.allVisa.length; i++) {
                     factory.getFolderItem(factory.allVisa[i]);
                 }
@@ -168,10 +143,13 @@
 
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
+            let myList = [];
 
             if(visaStateFolder && item) {
-                
-                factory.addPluginInfo(item,path,data,visaStateFolder._info.listVisaValidation,() => {
+                for (var i = 0; i < factory.allCases.length; i++) {
+                    myList.push(factory.allCases[i].name.get())
+                }
+                factory.addPluginInfo(item,path,data,myList,() => {
                     visaStateFolder.load((data2) => {
                         data2.push(item);
                         item._parents.splice(item._parents.indexOf(item),1);
@@ -183,10 +161,60 @@
 
         }
         
+
+        factory.ReturnlistCase = (data) => {
+            if(!data._info.listCaseValidation) {
+                data._info.add_attr({
+                    listCaseValidation : new Lst()
+                })
+            }
+
+            return data._info.listCaseValidation;
+        }
+
+
+        factory.getAllCase = () => {
+            if(itemQ) {
+                return itemQ.promise; 
+            }
+            itemQ = $q.defer()
+            ngSpinalCore.load_root()
+            .then((data) => {
+                for (var i = 0; i < data.length; i++) {
+                    if(data[i].name.get() == "__visa__") {
+                        factory.allCases = factory.ReturnlistCase(data[i]);
+                        itemQ.resolve(data[i]);
+                    }
+                }
+            })
+        }
+
+        factory.getAllCase();
         
 
+        factory.AddValidationCase = (result) => {
 
+            console.log(result);
 
+            if(result.id) {
+                for (var i = 0; i < factory.allCases.length; i++) {
+                    if(factory.allCases[i].id.get() == result.id) {
+                        factory.allCases[i].name.set(result.name);
+                        factory.allCases[i].description.set(result.description);
+                        factory.allCases[i].users.set(result.users);
+                        break;
+                    } 
+                }
+            } else {
+                var caseValidation = new CaseValidation(factory.newGuid());
+                caseValidation.name.set(result.name);
+                caseValidation.description.set(result.description);
+                caseValidation.users.set(result.users);
+                
+                factory.allCases.push(caseValidation);
+            }
+
+        }
 
         return factory;
 
