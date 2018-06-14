@@ -80,7 +80,7 @@
                         <td>{{item.name.get()}}</td>
                         <td>{{item._info.visaValidation.path.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
-                            <md-checkbox ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                            <md-checkbox aria-label="checkbox" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
                         
                         <td>{{item._info.visaValidation.date.get() | date}}</td>
@@ -135,14 +135,14 @@
                     <tr ng-repeat="myCase in myAllCases">
                         <td>{{myCase.name}}</td>
                         <td>{{myCase.description}}</td>
-                        <td>{{myCase.users}}</td>
+                        <td>{{displayAllUsers(myCase.users)}}</td>
                         <td>
-                            <md-button ng-click="editFileInfo($event,myCase)">
+                            <md-button aria-label="edit" ng-click="editFileInfo($event,myCase)">
                                 <i class="fa fa-pencil"></i>
                             </md-button>
                         </td>
                         <td>
-                            <md-button ng-click="deleteValidationCase(myCase)">
+                            <md-button aria-label="delete" ng-click="deleteValidationCase(myCase)">
                                 <i class="fa fa-trash"></i>
                             </md-button>
                         </td>

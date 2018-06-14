@@ -9,6 +9,7 @@ require('./adminVisaManagerCtrl');
 require('./adminVisaManagerService');
 
 require('./models');
+require('./displayFolderService');
 
 
 (function () {

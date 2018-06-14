@@ -20,6 +20,19 @@
         margin-right: 20px;
     }
 
+    .autoComplete {
+        border-bottom: 1px solid #747474;
+        margin-bottom: 30px;
+    }
+
+    .autoComplete:focus {
+        border-bottom: 1px solid #ffffff;
+    }
+
+    .myvisaTable {
+        margin-top: 20px;
+    }
+
 </style>
 
 <md-dialog class="myContainer" aria-label="addLink">
@@ -37,11 +50,44 @@
             <textarea ng-model="description" rows="4" md-select-on-focus></textarea>
         </md-input-container>
     
-        <md-input-container md-no-float class="md-block">
+        <!-- <md-input-container md-no-float class="md-block">
             <input placeholder="Username">
-        </md-input-container>
+        </md-input-container> -->
 
-        <table class="visaTable" style="width: 100%">
+        <!-- ************************************************************************************************************************* -->
+        <div layout-gt-md="row">
+            
+            <md-chips ng-model="chip_users" md-autocomplete-snap md-transform-chip="transformChip($chip)" md-require-match="true">
+
+                <md-autocomplete  md-selected-item="selectedItem"
+                        md-search-text="searchText"
+                        md-items="item in querySearch(searchText)"
+                        md-item-text="item.name"
+                        placeholder="Username...">
+                    <span md-highlight-text="searchText">{{item.id}} - {{item.name}}</span>
+                </md-autocomplete>
+
+                <md-chip-template>
+                    <span>
+                    <strong>{{$chip.name}}</strong>
+                    <em>({{$chip.id}})</em>
+                    </span>
+                </md-chip-template>
+
+            </md-chips>
+
+            <md-input-container>
+                <md-button ng-click="addUser()">ADD</md-button>
+            </md-input-container>
+            
+        </div>
+        
+        
+        <!--  *************************************************************************************************************************  -->
+
+
+
+        <table class="myvisaTable" style="width: 100%">
             <thead>
                 <tr>
                     <th style="width: 20%" title="name">User ID</th>
@@ -51,12 +97,12 @@
             </thead>
 
             <tbody>  
-                <tr ng-repeat="user in users">
+                <tr ng-repeat="user in users track by $index">
                     <td>{{user.id}}</td>
-                    <td>{{user.username}}</td>
+                    <td>{{user.name}}</td>
                     <td>
-                        <md-button>
-                            <i class="fa fa-trash" ng-click="deleteUser(user.id)"></i>
+                        <md-button ng-click="deleteUser(user.id)">
+                            <i class="fa fa-trash" ></i>
                         </md-button>
                     </td>
                 </tr>

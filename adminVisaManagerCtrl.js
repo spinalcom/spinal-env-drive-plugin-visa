@@ -1,6 +1,7 @@
 (function(){
     angular.module('app.spinal-panel')
-    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile",function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile){
+    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary",
+    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary){
 
     $scope.currentPage = 1;
 
@@ -36,7 +37,6 @@
 
     allCase.then(() => {
         visaManagerService.allCases.bind(() => {
-            console.log("yes")
             $scope.myAllCases = visaManagerService.allCases;
         })
     })
@@ -86,7 +86,6 @@
     }
 
     $scope.removePluginInfo = (item) => {
-        console.log(item)
         if(item.length == 0) {
             var parent_id = spinalFileSystem.folderExplorer_dir[item._ptr.data.value].model;
 
@@ -95,7 +94,6 @@
             for (var i = 0; i < parent_list.length; i++) {
                 if(parent_list[i]._server_id == item._server_id) {
                     parent_list[i].rem_attr("subvisaPlugin");
-                    console.log("empty !");
                 }
             }
 
@@ -237,12 +235,14 @@
 
         for (var i = 0; i < apps.length; i++) {
             let app = apps[i];
-            $scope.changeAction(app)
-            res[app.name] = {
-                label: app.label,
-                icon: app.icon,
-                action: $scope.create_action_callback(node, app)
-            };
+            if(app.label != "Share...") {
+                $scope.changeAction(app)
+                    res[app.name] = {
+                    label: app.label,
+                    icon: app.icon,
+                    action: $scope.create_action_callback(node, app)
+                };
+            }
         }
 
 
@@ -261,8 +261,8 @@
 
     let listener_destructor = spinalFileSystem.subcribe("SPINAL_FS_ONCHANGE",() => {
         spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
-            $scope.fsdir = res.tree;
-            $scope.all_dir = res.all_dir;
+            $scope.fsdir = displayFolderService.getFolderJson(res.tree);
+            $scope.all_dir = displayFolderService.getTreeJson(res.all_dir);
         });
     });
 
@@ -283,16 +283,45 @@
 
     spinalFileSystem.init();
 
+
     spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
-        $scope.fsdir = res.tree;
-        $scope.all_dir = res.all_dir;
+        $scope.fsdir = displayFolderService.getFolderJson(res.tree);
+        $scope.all_dir = displayFolderService.getTreeJson(res.all_dir); //displayFolderService.getFolderJson(res.all_dir);
+
     });
     
+    $scope.displayAllUsers = (users) => {
+        console.log("users",users);
+        var name = "";
+        for (var i = 0; i < users.length; i++) {
+            name += users[i].name + ','
+        }
+
+        return name;
+    }
+
 
     $scope.editFileInfo = (ev,item) => {
 
         $mdDialog.show({
             controller: ["$scope",($scope) => {
+
+                spinalModelDictionary.init().then(() => {
+                    $scope.allUsers = spinalModelDictionary.users.get();
+
+                    console.log($scope.allUsers);
+                    
+                    $scope.allUsers.forEach(element => {
+                        element.share_selected = false;
+                        element._lowername = element.name.toLowerCase();
+                    });
+
+                })
+
+
+
+                $scope.searchText = null;
+                $scope.selectedItem = null;
 
                 if(item) { 
                     $scope.title = "edit case";
@@ -305,6 +334,53 @@
                     $scope.name = ""
                     $scope.description = ""
                     $scope.users = []; 
+                }
+
+                
+
+/********************************************************************************************************************************************************************************************/
+ 
+                $scope.createFilterFor = query => {
+                    var lowercaseQuery = angular.lowercase(query);
+
+                    return function filterFn(user) {
+                    return (
+                        user._lowername.indexOf(lowercaseQuery) === 0 ||
+                        user.id.toString().indexOf(lowercaseQuery) === 0
+                    );
+                    };
+                };
+
+                $scope.querySearch = query => {
+                    var results = query
+                      ? $scope.allUsers.filter($scope.createFilterFor(query))
+                      : [];
+                    return results;
+                };
+
+                $scope.transformChip = function(chip) {
+                    // If it is an object, it's already a known chip
+                    if (angular.isObject(chip)) {
+                      return chip;
+                    }
+                    // Otherwise, create a new one
+                    return {
+                      name: chip,
+                      type: "new"
+                    };
+                };
+
+                $scope.chip_users = [];
+
+
+/********************************************************************************************************************************************************************************************/
+
+                $scope.addUser = () => {
+                    for (var i = 0; i < $scope.chip_users.length; i++) {
+                        $scope.users.push($scope.chip_users[i]);
+                    };
+
+                    $scope.chip_users = [];
                 }
 
 

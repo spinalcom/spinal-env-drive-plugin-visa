@@ -13,10 +13,8 @@
         factory.allCases;
 
         factory.init = () => {
-            console.log("start init");
             
             if(initQ) {
-                console.log("init extst");
                 
                return initQ.promise; 
             }
@@ -30,9 +28,7 @@
                 for (var i = 0; i < data.length; i++) {
                     if(data[i].name.get() == "__visa__") {
                         data[i].load((m) => {
-                            console.log("m",m);
                             factory.allVisa = m;
-                            console.log("factory.init",factory.allVisa);
                             initQ.resolve(factory.allVisa);
                             
                         })
@@ -47,11 +43,9 @@
                 let _visa = new Directory();
 
                 data.add_file("__visa__",_visa,{model_type : "Directory"});
-                console.log("xcvsvf")
                 initQ.resolve(factory.allVisa);
 
             },() => { })
-            console.log("init exist 2");
             
             return initQ.promise;
 
@@ -97,7 +91,6 @@
             factory.listPromise = [];
 
             return new Promise(function(resolve,reject) {
-                console.log("get All item ")
                 for (var i = 0; i < factory.allVisa.length; i++) {
                     factory.getFolderItem(factory.allVisa[i]);
                 }
@@ -193,8 +186,6 @@
         
 
         factory.AddValidationCase = (result) => {
-
-            console.log(result);
 
             if(result.id) {
                 for (var i = 0; i < factory.allCases.length; i++) {
