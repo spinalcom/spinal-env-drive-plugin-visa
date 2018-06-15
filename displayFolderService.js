@@ -5,11 +5,13 @@ angular.module('app.spinal-panel')
 
     let factory = {};
 
+    factory.rootId;
 
     factory.getRoot = (all_dir) => {
 
         for (var i = 0; i < all_dir.length; i++) {
             if(all_dir[i].parent == "#") {
+                factory.rootId = all_dir[i].id;
                 return all_dir[i];
             }
         }
@@ -55,7 +57,7 @@ angular.module('app.spinal-panel')
 
     }
 
-    factory.removeAll = (all_dir,root,items) => {
+    factory.removeAll = (all_dir,root,items) => { 
 
         for (var i = 0; i < items.length; i++) {
 
@@ -63,9 +65,9 @@ angular.module('app.spinal-panel')
                 if(all_dir[j].text == "__visa__") {
                     all_dir[j].parent = "#";
                 }
-                else if(all_dir[j].id == items[i] || all_dir[j].id == root || all_dir[j].id == 16 || all_dir[j].id == 17) { //A changer
+                if((all_dir[j].id == items[i] || all_dir[j].parent == items[i] || all_dir[j].id == root) && all_dir[j].text != "__visa__") { //A changer
                     all_dir.splice(j,1);
-                    // break;
+                    j--;
                 }
             }
 
@@ -81,23 +83,24 @@ angular.module('app.spinal-panel')
 
         factory.allToRemove = factory.getItemId(all_dir,root.id);
 
-        var rem = factory.getAllChild(all_dir,factory.allToRemove);
-        
+        factory.getAllChild(all_dir,factory.allToRemove);
+
         return factory.removeAll(all_dir,root.id,factory.allToRemove);
 
     }
 
 
     factory.getTreeJson = (all_tree) => {
+
         for (var i = 0; i < factory.allToRemove.length; i++) {
             if (all_tree[factory.allToRemove[i]]) 
                 delete all_tree[factory.allToRemove[i]];
         }
 
-        delete all_tree["15"]; //A changer
-
+        delete all_tree[factory.rootId]; //A changer
 
         return all_tree;
+        
     }
 
     return factory;

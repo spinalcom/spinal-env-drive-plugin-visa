@@ -11,8 +11,11 @@
             visaManagerService.getAllItemInvalidation()
             .then((el) => {
 
+              console.log("el",el);
+
                 Promise.all(el)
                 .then(function(values) {
+                  console.log("values",values)
                     for (var i = 0; i < values.length; i++) {
                         if(values[i].length > 0) {
                           var x = values[i];

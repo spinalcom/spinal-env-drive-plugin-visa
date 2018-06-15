@@ -1,8 +1,9 @@
 
 var validModel = class validModel extends Model {
-    constructor(name) {
+    constructor(id,name) {
         super();
         this.add_attr({
+            id : id,
             name : name,
             valid : false
         })
@@ -18,7 +19,7 @@ var VisaModel = class VisaModel extends Model {
         var x = new Lst();
         if(myList) {
             for (var i = 0; i < myList.length; i++) {
-                var obj = new validModel(myList[i]);
+                var obj = new validModel(myList[i].id,myList[i].name);
                 x.push(obj);
             }
         }

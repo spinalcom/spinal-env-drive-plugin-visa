@@ -8,8 +8,9 @@
         let user = authService.get_user();
         var initQ;
         var itemQ;
+        var $scope = 
 
-        factory.listPromise = new Lst();
+        factory.listPromise = [];
         factory.allCases;
 
         factory.init = () => {
@@ -52,7 +53,7 @@
             
         }
 
-        factory.init().then(() => {});
+        factory.init()
 
 
         factory.newGuid = () => {
@@ -122,8 +123,8 @@
                 return;                
             }
             
-            item._info.visaValidation.info.message.set(data.message);
-            item._info.visaValidation.info.state_id.set(data.stateId);
+            item._info.visaValidation.message.set(data.message);
+            item._info.visaValidation.state_id.set(data.stateId);
             item._info.visaValidation.validation = listModel;
             item._info.visaValidation.path.set(path);
             item._info.visaValidation.date.set(Date.now());
@@ -138,22 +139,24 @@
             let item = FileSystem._objects[data.itemId];
             let myList = [];
 
+            console.log(factory.allVisa);
+            console.log(visaStateFolder);
+
             if(visaStateFolder && item) {
                 for (var i = 0; i < factory.allCases.length; i++) {
-                    myList.push(factory.allCases[i].name.get())
+                    myList.push({id : factory.allCases[i].id.get(),name : factory.allCases[i].name.get()})
                 }
+
                 factory.addPluginInfo(item,path,data,myList,() => {
                     visaStateFolder.load((data2) => {
                         data2.push(item);
-                        item._parents.splice(item._parents.indexOf(item),1);
                     })
                 })
 
                 
             }
 
-        }
-        
+        }  
 
         factory.ReturnlistCase = (data) => {
             if(!data._info.listCaseValidation) {
@@ -205,6 +208,21 @@
                 factory.allCases.push(caseValidation);
             }
 
+        }
+
+
+/*----------------------------------------------- A Modier --------------------------------------------------*/
+
+        factory.AddCase = () => {
+
+        }
+
+        factory.removeCase = () => {
+
+        }
+
+        factory.editCase = () => {
+            
         }
 
         return factory;

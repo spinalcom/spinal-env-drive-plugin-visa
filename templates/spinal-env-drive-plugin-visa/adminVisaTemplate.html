@@ -132,7 +132,7 @@
                 </thead>
 
                 <tbody>  
-                    <tr ng-repeat="myCase in myAllCases">
+                    <tr ng-if="myAllCases.length > 0" ng-repeat="myCase in myAllCases">
                         <td>{{myCase.name}}</td>
                         <td>{{myCase.description}}</td>
                         <td>{{displayAllUsers(myCase.users)}}</td>

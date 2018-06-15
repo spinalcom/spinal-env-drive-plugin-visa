@@ -115,10 +115,14 @@
         .ok('Yes')
         .cancel('No');
 
-        var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
-        var id = obj.node.original.model;
+        if(obj.node.original.parent != "#"){
+            var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
+            var id = obj.node.original.model;
 
-        var parent_list = FileSystem._objects[parent_id];
+            var parent_list = FileSystem._objects[parent_id];
+        } else {
+            alert("Sorry you can't remove this file !");
+        }
 
         if(parent_list) {
             $mdDialog.show(confirm).then(() => {
@@ -143,7 +147,14 @@
         .ok('Ok')
         .cancel('Cancel');
 
-        var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
+
+        if(obj.node.original.parent != "#"){
+
+            var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
+
+        } else {
+            var parent_id = spinalFileSystem.folderExplorer_dir[displayFolderService.rootId].model;
+        }
         var id = obj.node.original.model;
 
         var parent_list = FileSystem._objects[parent_id];
@@ -190,11 +201,14 @@
         .ok('Ok')
         .cancel('Cancel');
 
-        var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
-        var id = obj.node.original.model;
-
-
-        var parent_list = FileSystem._objects[parent_id];
+        if(obj.node.original.parent != "#") {
+            var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
+            var id = obj.node.original.model;
+            var parent_list = FileSystem._objects[parent_id];
+        } else {
+            alert("Sorry You can't rename this file!!");
+        }
+        
 
         if(parent_list) {
             $mdDialog.show(confirm).then(function(result) {
@@ -285,13 +299,16 @@
 
 
     spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
-        $scope.fsdir = displayFolderService.getFolderJson(res.tree);
-        $scope.all_dir = displayFolderService.getTreeJson(res.all_dir); //displayFolderService.getFolderJson(res.all_dir);
+
+        var myTree = res.tree.splice(0);
+        var myAll_dir = Object.assign(res.all_dir);
+
+        $scope.fsdir = displayFolderService.getFolderJson(myTree);
+        $scope.all_dir = displayFolderService.getTreeJson(myAll_dir); //displayFolderService.getFolderJson(res.all_dir);  
 
     });
     
     $scope.displayAllUsers = (users) => {
-        console.log("users",users);
         var name = "";
         for (var i = 0; i < users.length; i++) {
             name += users[i].name + ','
@@ -301,6 +318,9 @@
     }
 
 
+
+/*------------------------------------------------------- A Modifier -------------------------------------------------*/
+
     $scope.editFileInfo = (ev,item) => {
 
         $mdDialog.show({
@@ -308,8 +328,6 @@
 
                 spinalModelDictionary.init().then(() => {
                     $scope.allUsers = spinalModelDictionary.users.get();
-
-                    console.log($scope.allUsers);
                     
                     $scope.allUsers.forEach(element => {
                         element.share_selected = false;
