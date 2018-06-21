@@ -67,19 +67,19 @@
             <table class="visaTable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th style="width: 10%" title="name">Name</th>
+                        <th style="width: 15%" title="name">Name</th>
                         <th style="width: 30%" title="Path">Path</th>
-                        <th ng-repeat="case in myAllCases">{{case.name.get() | uppercase}}</th>
+                        <th ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
                         <th style="width: 10%" title="Path">Date</th>
                         <th style="width: 10%" title="Path">%</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="item in allItems">
+                    <tr ng-repeat="item in allItems track by $index">
                         <td>{{item.name.get()}}</td>
                         <td>{{item._info.visaValidation.path.get()}}</td>
-                        <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation">
+                        <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <md-checkbox aria-label="checkbox" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
                         
@@ -132,7 +132,7 @@
                 </thead>
 
                 <tbody>  
-                    <tr ng-if="myAllCases.length > 0" ng-repeat="myCase in myAllCases">
+                    <tr ng-if="myAllCases.length > 0" ng-repeat="myCase in myAllCases track by $index">
                         <td>{{myCase.name}}</td>
                         <td>{{myCase.description}}</td>
                         <td>{{displayAllUsers(myCase.users)}}</td>

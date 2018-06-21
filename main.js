@@ -46,41 +46,48 @@ require('./displayFolderService');
           load_template(toload[i].uri, toload[i].name);
         }
 
-        goldenLayoutService.registerPanel({
-          id: "spinal-env-drive-plugin-visa",
-          name: "Visa Profil",
-          cfg: {
-            isClosable: true,
-            title: "Visa Profil",
-            type: 'component',
-            width: 50,
-            componentName: 'SpinalHome',
-            componentState: {
-              template: 'visaTemplate.html',
-              module: 'app.spinal-visa',
-              controller: 'visaManagerCtrl'
-            }
-          }
-        });
+        var plateform = /drive/.exec(window.location.pathname);
 
-        goldenLayoutService.registerPanel({
-          id: "spinal-env-drive-plugin-admin-visa",
-          name: "Admin Visa",
-          cfg: {
-            isClosable: true,
-            title: "Admin Visa",
-            type: 'component',
-            width: 500,
-            componentName: 'SpinalHome',
-            componentState: {
-              template: 'adminVisaTemplate.html',
-              module: 'app.spinal-visa',
-              controller: 'adminVisaManagerCtrl'
-            }
-          }
-        });
 
-        spinalDrive_Env.add_applications('FileExplorer', new SpinalDrive_App_FileExplorer_visa());
+        if(plateform) {
+          goldenLayoutService.registerPanel({
+            id: "spinal-env-drive-plugin-visa",
+            name: "Visa Profil",
+            cfg: {
+              isClosable: true,
+              title: "Visa Profil",
+              type: 'component',
+              width: 50,
+              componentName: 'SpinalHome',
+              componentState: {
+                template: 'visaTemplate.html',
+                module: 'app.spinal-visa',
+                controller: 'visaManagerCtrl'
+              }
+            }
+          });
+        } else {
+          goldenLayoutService.registerPanel({
+            id: "spinal-env-drive-plugin-admin-visa",
+            name: "Admin Visa",
+            cfg: {
+              isClosable: true,
+              title: "Admin Visa",
+              type: 'component',
+              width: 50,
+              componentName: 'SpinalHome',
+              componentState: {
+                template: 'adminVisaTemplate.html',
+                module: 'app.spinal-visa',
+                controller: 'adminVisaManagerCtrl'
+              }
+            }
+          });
+        }
+
+        if(plateform) {
+          spinalDrive_Env.add_applications('FileExplorer', new SpinalDrive_App_FileExplorer_visa());
+        }
 
         
 

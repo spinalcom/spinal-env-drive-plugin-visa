@@ -8,11 +8,17 @@
         let user = authService.get_user();
         var initQ;
         var itemQ;
-        var $scope = 
 
         factory.listPromise = [];
         factory.allCases;
+        factory.loadPage = new Bool(true);
 
+
+        /**
+         * 
+         * Initialisation pour verifier si le dossier __visa__ est créer, sinon on le crée !!
+         * 
+         ****/
         factory.init = () => {
             
             if(initQ) {
@@ -30,8 +36,8 @@
                     if(data[i].name.get() == "__visa__") {
                         data[i].load((m) => {
                             factory.allVisa = m;
+                            factory.loadPage.set(!factory.loadPage.get());
                             initQ.resolve(factory.allVisa);
-                            
                         })
                         
                         return;
@@ -44,6 +50,8 @@
                 let _visa = new Directory();
 
                 data.add_file("__visa__",_visa,{model_type : "Directory"});
+                factory.loadPage.set(!factory.loadPage.get());
+
                 initQ.resolve(factory.allVisa);
 
             },() => { })
@@ -56,6 +64,12 @@
         factory.init()
 
 
+
+        /****
+         * 
+         * Génerer un id unique
+         * 
+         */
         factory.newGuid = () => {
             var d = new Date().getTime();
             var guid = 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, function (c) {
@@ -67,6 +81,11 @@
         };
 
 
+        /****
+         * 
+         * Return une promise qui contient le contenu du dossier donné en param
+         * 
+         */
         factory.getFolderItem = (item) => {
             if(item._info.subvisaPlugin) {
 
@@ -87,6 +106,14 @@
             }
         }
 
+
+        /**
+         * 
+         * Return une liste de promises de tous les fichiers ajoutés pour valider
+         * 
+         * Trop lent (pourquoi j'ai ajouté setTimeout)
+         * 
+         */
         factory.getAllItemInvalidation = () => {
 
             factory.listPromise = [];
@@ -112,6 +139,11 @@
 
         }
 
+        /***
+         * 
+         * Modifie l'attribut _info.visaValidation s'il existe sinon on le crée
+         * 
+         */
 
         factory.addPluginInfo = (item,path,data,listModel,callback) => {
 
@@ -123,9 +155,13 @@
                 return;                
             }
             
+            for (var i = 0; i < listModel.length; i++) {
+                listModel[i].valid = false;
+            }
+
             item._info.visaValidation.message.set(data.message);
             item._info.visaValidation.state_id.set(data.stateId);
-            item._info.visaValidation.validation = listModel;
+            item._info.visaValidation.validation.set(listModel);
             item._info.visaValidation.path.set(path);
             item._info.visaValidation.date.set(Date.now());
             callback();
@@ -133,23 +169,27 @@
         }
 
 
+        /****
+         * 
+         * Ajouter un item à valider
+         * 
+         */
         factory.addItemToValidate = (data,path) => {
 
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
             let myList = [];
 
-            console.log(factory.allVisa);
-            console.log(visaStateFolder);
 
             if(visaStateFolder && item) {
                 for (var i = 0; i < factory.allCases.length; i++) {
-                    myList.push({id : factory.allCases[i].id.get(),name : factory.allCases[i].name.get()})
+                    myList.push({id : factory.allCases[i].id.get(), name : factory.allCases[i].name.get(), users : factory.allCases[i].users.get()});
                 }
 
                 factory.addPluginInfo(item,path,data,myList,() => {
                     visaStateFolder.load((data2) => {
                         data2.push(item);
+                        factory.loadPage.set(!factory.loadPage.get());
                     })
                 })
 
@@ -158,6 +198,8 @@
 
         }  
 
+
+        
         factory.ReturnlistCase = (data) => {
             if(!data._info.listCaseValidation) {
                 data._info.add_attr({
@@ -188,7 +230,9 @@
         factory.getAllCase();
         
 
-        factory.AddValidationCase = (result) => {
+        factory.AddValidationCase = (result,callback) => {
+
+            var myCase;
 
             if(result.id) {
                 for (var i = 0; i < factory.allCases.length; i++) {
@@ -196,6 +240,7 @@
                         factory.allCases[i].name.set(result.name);
                         factory.allCases[i].description.set(result.description);
                         factory.allCases[i].users.set(result.users);
+                        callback("edit",factory.allCases[i]);
                         break;
                     } 
                 }
@@ -206,23 +251,44 @@
                 caseValidation.users.set(result.users);
                 
                 factory.allCases.push(caseValidation);
+                callback("add",caseValidation);
             }
 
-        }
-
-
-/*----------------------------------------------- A Modier --------------------------------------------------*/
-
-        factory.AddCase = () => {
-
-        }
-
-        factory.removeCase = () => {
-
-        }
-
-        factory.editCase = () => {
             
+
+        }
+
+
+        factory.AddCase = (allItems,x) => {
+            for (var i = 0; i < allItems.length; i++) {
+                allItems[i]._info.visaValidation.validation.push(new validModel(x.id,x.name,x.users));
+            }
+        }
+
+        factory.removeCase = (allItems,id) => {
+            for (var i = 0; i < allItems.length; i++) {
+                for (var j = 0; j < allItems[i]._info.visaValidation.validation.length; j++) {
+                    if(allItems[i]._info.visaValidation.validation[j].id.get() == id) {
+                        allItems[i]._info.visaValidation.validation.splice(j,1);
+                    }
+                }
+            }
+        }
+
+        factory.editCase = (allItems,validModel) => {
+            for (var i = 0; i < allItems.length; i++) {
+                for (var j = 0; j < allItems[i]._info.visaValidation.validation.length; j++) {
+                    if(allItems[i]._info.visaValidation.validation[j].id.get() == validModel.id.get()) {
+                        allItems[i]._info.visaValidation.validation[j].name.set(validModel.name.get());
+                        allItems[i]._info.visaValidation.validation[j].users.set(validModel.users.get());
+                    }
+                }
+            }
+        }
+
+
+        factory.addFolderToValidate = () => {
+
         }
 
         return factory;

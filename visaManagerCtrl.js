@@ -7,12 +7,12 @@
         $scope.allItems = [];
 
         init.then(() => {
-          visaManagerService.allVisa.bind(() => {
+          visaManagerService.loadPage.bind(() => {
+
+            $scope.allItems = [];
+            
             visaManagerService.getAllItemInvalidation()
             .then((el) => {
-
-              console.log("el",el);
-
                 Promise.all(el)
                 .then(function(values) {
                   console.log("values",values)

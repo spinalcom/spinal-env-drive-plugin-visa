@@ -18,7 +18,7 @@
             <md-input-container class="input_header md-block" flex-gt-sm>
                 <label>Visa state</label>
                 <md-select required ng-model="visaSelected" ng-change="selectedChange(visaSelected)">
-                  <md-option ng-repeat="visa in allVisa" value="{{visa._server_id}}">
+                  <md-option ng-repeat="visa in allVisa track by $index" value="{{visa._server_id}}">
                     {{visa.name}}
                   </md-option>
                 </md-select>

@@ -12,25 +12,28 @@
     $scope.allItems = [];
 
     init.then(() => {
-        visaManagerService.getAllItemInvalidation()
-        .then((el) => {
+        visaManagerService.loadPage.bind(() => {
+            $scope.allItems = [];
+            visaManagerService.getAllItemInvalidation()
+            .then((el) => {
 
-            Promise.all(el)
-            .then(function(values) {
-                for (var i = 0; i < values.length; i++) {
-                    if(values[i].length > 0) {
-                        var x = values[i];
-                        for (let index = 0; index < x.length; index++) {
-                            $scope.allItems.push(x[index]);
-                            $scope.$apply();
+                Promise.all(el)
+                .then(function(values) {
+                    for (var i = 0; i < values.length; i++) {
+                        if(values[i].length > 0) {
+                            var x = values[i];
+                            for (let index = 0; index < x.length; index++) {
+                                $scope.allItems.push(x[index]);
+                                $scope.$apply();
+                            }
                         }
                     }
-                }
-                
-            },(err) => {
-                console.log(err)
-            })
+                    
+                },(err) => {
+                    console.log(err)
+                })
 
+            })
         })
 
     })
@@ -393,9 +396,21 @@
 
 /********************************************************************************************************************************************************************************************/
 
+                $scope.userExist = (myArray, item) => {
+                    for (var i = 0; i < myArray.length; i++) {
+                        if(myArray[i].id == item.id) {
+                            return true
+                        }
+                    }
+
+                    return false;
+                }
+
                 $scope.addUser = () => {
                     for (var i = 0; i < $scope.chip_users.length; i++) {
-                        $scope.users.push($scope.chip_users[i]);
+                        if(!$scope.userExist($scope.users,$scope.chip_users[i])) {
+                            $scope.users.push($scope.chip_users[i]);
+                        }
                     };
 
                     $scope.chip_users = [];
@@ -432,7 +447,20 @@
           })
             .then(function(answer) {
                 
-                visaManagerService.AddValidationCase(answer);
+                visaManagerService.AddValidationCase(answer, (state,item) => {
+                    switch (state) {
+                        case "add":
+                            visaManagerService.AddCase($scope.allItems,{id : item.id,name : item.name,users : item.users});
+                            break;
+                        case "edit":
+                            var x = new validModel(item.id,item.name,item.users);
+                            visaManagerService.editCase($scope.allItems,x);
+                            break;
+                        default :
+
+                            
+                    }
+                });
 
 
             }, () => {});
@@ -452,6 +480,7 @@
             for (var i = 0; i < visaManagerService.allCases.length; i++) {
                 if(visaManagerService.allCases[i].id.get() == myCase.id.get()) {
                     visaManagerService.allCases.splice(i,1);
+                    visaManagerService.removeCase($scope.allItems,myCase.id.get());
                 }
             }
         },() => {});
