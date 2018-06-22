@@ -11,6 +11,11 @@ require('./adminVisaManagerService');
 require('./models');
 require('./displayFolderService');
 
+require('./searchFilter');
+require('./selectFilter');
+require('./chart.min');
+require('./chart.directive');
+
 
 (function () {
   angular.module('app.spinal-panel')

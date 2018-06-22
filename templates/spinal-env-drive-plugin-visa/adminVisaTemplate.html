@@ -12,7 +12,10 @@
     }
 
     .visaTable thead, .visaTable tr,.visaTable td{
-        height: 50px;
+        height: 30px;
+        padding: 5px; 
+        overflow: hidden;
+        white-space: nowrap;
         text-overflow: ellipsis;
         border-bottom: 1px solid #ddd;
     }
@@ -32,10 +35,14 @@
         margin-bottom: 30px;
     }
 
+    .tableTd {
+        text-overflow: ellipsis;
+    }
+
 </style>
 
 
-<md-content class="myContainer md-padding">
+<md-content id="myContainer" class="myContainer md-padding">
     <md-nav-bar nav-bar-aria-label="navigation links">
         <md-nav-item md-nav-click="goto(1)" name="page1">
             FileList
@@ -49,6 +56,10 @@
             Validation item
         </md-nav-item>
 
+        <md-nav-item md-nav-click="goto(4)" name="page4">
+            Graph
+        </md-nav-item>
+
     </md-nav-bar>
 
 
@@ -57,9 +68,20 @@
         <div class="search">
             <md-input-container class="md-block">
                 <label>Search</label>
-                <input />
+                <input  ng-model="searchText"/>
             </md-input-container>
         </div>
+
+
+        <md-input-container class="md-block" flex-gt-sm>
+            <label>Display</label>
+            <md-select ng-model="itemValid">
+              <md-option value="all">All</md-option>
+              <md-option value="notValid">Not valid</md-option>
+              <md-option value="valid">valid</md-option>
+            </md-select>
+        </md-input-container>
+
 
 
         <div class="table">
@@ -67,25 +89,25 @@
             <table class="visaTable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th style="width: 15%" title="name">Name</th>
-                        <th style="width: 30%" title="Path">Path</th>
-                        <th ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
-                        <th style="width: 10%" title="Path">Date</th>
-                        <th style="width: 10%" title="Path">%</th>
+                        <th class="tableTd" style="width: 15%" title="name">Name</th>
+                        <th class="tableTd" style="width: 30%" title="Path">Path</th>
+                        <th class="tableTd" ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
+                        <th class="tableTd" style="width: 10%" title="Date">Date</th>
+                        <th class="tableTd" style="width: 10%" title="State">%</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="item in allItems track by $index">
-                        <td>{{item.name.get()}}</td>
-                        <td>{{item._info.visaValidation.path.get()}}</td>
-                        <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
+                    <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid  track by $index">
+                        <td title="{{item.name.get()}}" class="tableTd">{{item.name.get()}}</td>
+                        <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
+                        <td class="tableTd visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <md-checkbox aria-label="checkbox" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
                         
-                        <td>{{item._info.visaValidation.date.get() | date}}</td>
+                        <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>
 
-                        <td>
+                        <td title="{{item._info.visaValidation.isValid.get()}} %" class="tableTd">
                             {{item._info.visaValidation.isValid.get()}} %
                         </td>
                     </tr>
@@ -152,6 +174,11 @@
 
 
         </div>
+    </div>
+
+
+    <div class="content" ng-if="currentPage == 4">
+        <canvas id="myChart" width="400" height="400" chart-directive></canvas>
     </div>
 
 </md-content>

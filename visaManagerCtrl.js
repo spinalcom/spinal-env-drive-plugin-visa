@@ -5,6 +5,9 @@
 
         let init = visaManagerService.init()
         $scope.allItems = [];
+        $scope.searchText = "";
+        $scope.itemValid = "all";
+
 
         init.then(() => {
           visaManagerService.loadPage.bind(() => {

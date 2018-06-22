@@ -33,6 +33,15 @@
         margin-top: 20px;
     }
 
+    .myvisaTable thead, .myvisaTable tr,.myvisaTable td{
+        height: 30px;
+        padding: 5px; 
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        border-bottom: 1px solid #ddd;
+    }
+
 </style>
 
 <md-dialog class="myContainer" aria-label="addLink">
@@ -90,18 +99,18 @@
         <table class="myvisaTable" style="width: 100%">
             <thead>
                 <tr>
-                    <th style="width: 20%" title="name">User ID</th>
-                    <th style="width: 40%" title="Path">Username</th>
+                    <th title="user ID" style="width: 20%" title="name">User ID</th>
+                    <th title="Username" style="width: 40%" title="Path">Username</th>
                     <th style="width: 20%"></th>        
                 </tr>
             </thead>
 
             <tbody>  
                 <tr ng-repeat="user in users track by $index">
-                    <td>{{user.id}}</td>
-                    <td>{{user.name}}</td>
+                    <td title="{{user.id}}">{{user.id}}</td>
+                    <td title="{{user.name}}">{{user.name}}</td>
                     <td>
-                        <md-button ng-click="deleteUser(user.id)">
+                        <md-button ng-click="deleteUser(user.id)" aria-label="deleteUser">
                             <i class="fa fa-trash" ></i>
                         </md-button>
                     </td>

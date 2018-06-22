@@ -10,6 +10,9 @@
 
 
     $scope.allItems = [];
+    $scope.searchText = "";
+    $scope.itemValid = "all";
+
 
     init.then(() => {
         visaManagerService.loadPage.bind(() => {
@@ -72,6 +75,9 @@
 
     $scope.goto = (pageNumber) => {
         $scope.currentPage = pageNumber;
+        // if(pageNumber == 4) {
+        //     $scope.drawGraph();
+        // }
     }
 
 
@@ -486,6 +492,45 @@
         },() => {});
     }
     
+
+    $scope.ItemsValidCount = () => {
+        var cptValid = 0;
+        var cptInValid = 0;
+        for (var i = 0; i < $scope.allItems.length; i++) {
+            if($scope.allItems[i]._info.visaValidation.isValid == 100) {
+                cptValid++;
+            } else {
+                cptInValid++;
+            }
+        }
+
+        return [cptValid , cptInValid];
+
+    }
+
+    $scope.drawGraph = () => {
+        var container = document.querySelector("canvas#myChart");
+
+        console.log(container);
+        
+        // var myPieChart = new Chart(ctx,{
+        //     type : 'pie',
+        //     data : {
+        //         datasets : [{
+        //             data : $scope.ItemsValidCount()
+        //             // color : ["green","red"]
+        //         }],
+        //         labels : [
+        //             'Valid',
+        //             'Not Valid'
+        //         ]
+        //     },
+        //     options : {
+        //         color : ["green","red"]
+        //     }
+        // })
+
+    }
 
     
     }])
