@@ -31,6 +31,8 @@
                             }
                         }
                     }
+
+                    visaManagerService.getRemainingDay($scope.allItems);
                     
                 },(err) => {
                     console.log(err)
@@ -508,6 +510,7 @@
 
     }
 
+/*  
     $scope.drawGraph = () => {
         var container = document.querySelector("canvas#myChart");
 
@@ -531,7 +534,90 @@
         // })
 
     }
+*/
 
-    
+
+    $scope.GetCaseStatistique = () => {
+        var pourcentages = [];
+
+        for (var i = 0; i < $scope.myAllCases.length; i++) {
+            var nbrValid = 0;
+            var nbrInvalid = 0;
+
+            var id = $scope.myAllCases[i].id.get();
+
+            for (var j = 0; j < $scope.allItems.length; j++) {
+                for (var k = 0; k < $scope.allItems[j]._info.visaValidation.validation.length; k++) {
+                    if($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && $scope.allItems[j]._info.visaValidation.validation[k].valid.get()) {
+                        
+                        nbrValid++;
+
+                    } else if ($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && !$scope.allItems[j]._info.visaValidation.validation[k].valid.get()) {
+                        
+                        nbrInvalid++;
+
+                    }
+                }
+            }
+
+            pourcentages.push({name : $scope.myAllCases[i].name.get(), valid : nbrValid, invalid : nbrInvalid});
+
+        }
+
+        return pourcentages;
+
+    }
+
+    $scope.getPourcentageCase = () => {
+        var stat = $scope.GetCaseStatistique();
+
+        var pourcentage = [];
+
+        for (var i = 0; i < stat.length; i++) {
+            var item = stat[i];
+            pourcentage.push(Math.round((item.valid * 100 / (item.valid + item.invalid)) * 100) / 100);
+        }
+
+        return pourcentage;
+
+    }
+
+
+    $scope.getCaseLabel = () => {
+        var stat = $scope.GetCaseStatistique();
+
+        var labels = [];
+
+        for (var i = 0; i < stat.length; i++) {
+            labels.push(stat[i].name);
+        }
+
+        return labels;
+    }
+
+
+    $scope.getBackgroundColor = () => {
+        var stat = $scope.GetCaseStatistique();
+
+        var colors = [];
+
+        for (var i = 0; i < stat.length; i++) {
+            var item = stat[i];
+
+            if((Math.round((item.valid * 100 /(item.valid + item.invalid)) * 100) / 100) < 50) {
+                colors.push("red");
+            } else if ((Math.round((item.valid * 100 /(item.valid + item.invalid)) * 100) / 100) >= 50 && (Math.round((item.valid * 100 /(item.valid + item.invalid)) * 100) / 100) < 70) {
+                colors.push("orange");
+            } else if ((Math.round((item.valid * 100 /(item.valid + item.invalid)) * 100) / 100) >= 70) {
+                colors.push("green");
+            }
+        }
+
+        return colors;
+
+    }
+
+
+
     }])
 })();

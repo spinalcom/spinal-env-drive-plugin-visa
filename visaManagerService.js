@@ -149,7 +149,7 @@
 
             if(!item._info.visaValidation) {
                 item._info.add_attr({
-                    visaValidation : new VisaModel(data.message,data.stateId,listModel,path,Date.now()),
+                    visaValidation : new VisaModel(data.message,data.stateId,listModel,path,Date.now(),data.validateBefore),
                 })
                 callback()
                 return;                
@@ -164,6 +164,7 @@
             item._info.visaValidation.validation.set(listModel);
             item._info.visaValidation.path.set(path);
             item._info.visaValidation.date.set(Date.now());
+            item._info.visaValidation.validate_before.set(data.validateBefore);
             callback();
 
         }
@@ -198,8 +199,6 @@
 
         }  
 
-
-        
         factory.ReturnlistCase = (data) => {
             if(!data._info.listCaseValidation) {
                 data._info.add_attr({
@@ -288,6 +287,21 @@
 
 
         factory.addFolderToValidate = () => {
+
+        }
+
+        factory.getRemainingDay = (allList,item = null) => {
+            var div = 86400000;
+            var toDay = Date.now() / div; //convertir toDay en nbreDeJour
+
+            for (var i = 0; i < allList.length; i++) {
+                var expiration = allList[i]._info.visaValidation.validate_before.get() / div;
+                console.log(new Number(expiration - toDay).toFixed(0));
+            }
+
+            // var expiration = item._info.visaValidation.validate_before.get() / div;
+
+            // return new Number(expiration - toDay).toFixed(0);
 
         }
 

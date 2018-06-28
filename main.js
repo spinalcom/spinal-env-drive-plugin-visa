@@ -1,20 +1,17 @@
-
 require('./visaManagerCtrl');
 require('./visaManagerService');
 require('./addItem');
-
 require('./folder.directive');
-
 require('./adminVisaManagerCtrl');
 require('./adminVisaManagerService');
-
 require('./models');
 require('./displayFolderService');
-
 require('./searchFilter');
 require('./selectFilter');
 require('./chart.min');
 require('./chart.directive');
+require('./case.progress.directive');
+require('./changeDatePickerFormat');
 
 
 (function () {

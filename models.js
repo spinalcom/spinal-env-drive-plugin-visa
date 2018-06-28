@@ -15,7 +15,7 @@ module.exports.validModel = validModel;
 
 var VisaModel = class VisaModel extends Model {
 
-    constructor(message,state_id,myList,path,date) {
+    constructor(message,state_id,myList,path,date,validateBefore) {
         super();
         var x = new Lst();
         if(myList) {
@@ -31,7 +31,8 @@ var VisaModel = class VisaModel extends Model {
             validation : x,
             path : path,
             date : date,
-            isValid : 0
+            isValid : 0,
+            validate_before : validateBefore
         });
     }
 }

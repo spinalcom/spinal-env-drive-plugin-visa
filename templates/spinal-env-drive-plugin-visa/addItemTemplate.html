@@ -6,6 +6,14 @@
         margin-top: 30px !important;
     }
 
+    .datePicker {
+        margin-top: 10px;
+    }
+
+    .md-datepicker-calendar-pane.md-pane-open {
+        color : #ffffff;
+    }
+
 </style>
 
 
@@ -28,6 +36,12 @@
             <div class="displaySelect">
                 
             </div>
+
+
+            <md-input-container class="md-block datePicker">
+                <label>To Valid before</label>
+                <md-datepicker  md-open-on-focus md-hide-icons="all" md-min-date="minDate" ng-model="dateToValid"></md-datepicker>
+            </md-input-container>
 
 
             <md-input-container class="input_header md-block">

@@ -28,6 +28,7 @@
     .visaCheckbox {
         /* text-align: center; */
         padding-top: 15px;
+        text-overflow: clip !important;
     }
 
     .myBtn {
@@ -36,7 +37,24 @@
     }
 
     .tableTd {
+        overflow: hidden;
+        white-space: nowrap;
         text-overflow: ellipsis;
+        padding: 5px;
+    }
+
+    .validOrNot {
+        width: 39%;
+        height: 200px;
+        float: right;
+        
+    }
+
+    .graphStat {
+        width: 60%;
+        min-height: 200px;
+        float: left;
+        border-right: 1px solid #ddd;
     }
 
 </style>
@@ -61,8 +79,6 @@
         </md-nav-item>
 
     </md-nav-bar>
-
-
 
     <div class="content" ng-if="currentPage == 1">
         <div class="search">
@@ -92,7 +108,8 @@
                         <th class="tableTd" style="width: 15%" title="name">Name</th>
                         <th class="tableTd" style="width: 30%" title="Path">Path</th>
                         <th class="tableTd" ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
-                        <th class="tableTd" style="width: 10%" title="Date">Date</th>
+                        <th class="tableTd" style="width: 10%" title="Date">Creation Date</th>
+                        <th class="tableTd" style="width: 10%" title="validate before">Validate Before</th>
                         <th class="tableTd" style="width: 10%" title="State">%</th>
                     </tr>
                 </thead>
@@ -101,11 +118,13 @@
                     <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid  track by $index">
                         <td title="{{item.name.get()}}" class="tableTd">{{item.name.get()}}</td>
                         <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
-                        <td class="tableTd visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
+                        <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <md-checkbox aria-label="checkbox" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
                         
                         <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>
+
+                        <td title="{{item._info.visaValidation.validate_before.get() | date}}" class="tableTd">{{item._info.visaValidation.validate_before.get() | date}}</td>
 
                         <td title="{{item._info.visaValidation.isValid.get()}} %" class="tableTd">
                             {{item._info.visaValidation.isValid.get()}} %
@@ -113,7 +132,6 @@
                     </tr>
                 </tbody>
             </table>
-
 
         </div>
     </div>
@@ -130,7 +148,6 @@
         tree-events="select_node:onChangeNodeTree;open_node:onChangeNodeTree;close_node:onChangeNodeTree"
         tree-binds="dblclick.jstree:onbdlclick"></folder-organization>
     </div>
-
 
 
     <div class="content" ng-if="currentPage == 3">
@@ -178,7 +195,16 @@
 
 
     <div class="content" ng-if="currentPage == 4">
-        <canvas id="myChart" width="400" height="400" chart-directive></canvas>
+
+        <div class="graphStat">
+            <h4>Hello</h4>
+            <canvas id="myStat" width="100%" height="90%" case-progress-directive></canvas>
+        </div>
+
+        <div class="validOrNot">
+            <h4>World</h4>
+            <canvas id="myChart" width="100%" height="90%" chart-directive></canvas>
+        </div>
     </div>
 
 </md-content>

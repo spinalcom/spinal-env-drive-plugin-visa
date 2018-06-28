@@ -74,8 +74,17 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.message = "no Message !";
                 $scope.visa = -1;
                 $scope.nbrSelect = 0;
+                $scope.dateToValid = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
                 $scope.formValid = false;
 
+                var t = new Date();
+
+                $scope.minDate = new Date(
+                    t.getFullYear(),
+                    t.getMonth(),
+                    t.getDate() + 1,
+
+                )
                 
 
                 $scope.subVisaChanged = function(value,order) {
@@ -152,11 +161,13 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
 
                 $scope.cancel = function() {
+                    console.log($scope.dateToValid);
                     $mdDialog.cancel();
+
                 }
 
                 $scope.answer = function() {
-                    var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id}
+                    var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id, validateBefore : new Date($scope.dateToValid).getTime()}
                     
                     result["path"] = "/" + FileSystem._objects[$scope.visaSelected].name.get();
 

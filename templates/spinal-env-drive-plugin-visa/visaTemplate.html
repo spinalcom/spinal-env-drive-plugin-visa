@@ -15,6 +15,12 @@
         border-bottom: 1px solid #ddd;
     }
 
+    .visaTable thead tr th {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
     .visaTable thead, .visaTable tr,.visaTable td{
         height: 30px;
         padding: 5px; 
@@ -32,6 +38,7 @@
     .visaCheckbox {
         /* text-align: center; */
         padding-top: 15px;
+        text-overflow: clip !important;
     }
 
 </style>
@@ -64,8 +71,9 @@
                         <th  style="width: 15%" title="name">Name</th>
                         <th  style="width: 30%" title="Path">Path</th>
                         <th ng-repeat="header in headerList track by $index" title="{{header.name.get() | uppercase}}">{{header.name.get() | uppercase}}</th>
-                        <th title="Date" style="width: 10%">Date</th>
-                        <th title="State" style="width: 10%">State</th>
+                        <th title="Date" style="width: 10%">Creation Date</th>
+                        <th style="width: 10%" title="validate before">Validate Before</th>
+                        <th title="State" style="width: 10%">%</th>
                     </tr>
                 </thead>
 
@@ -79,6 +87,8 @@
                         </td>
                         
                         <td title="{{item._info.visaValidation.date.get() | date}}">{{item._info.visaValidation.date.get() | date}}</td>
+
+                        <td title="{{item._info.visaValidation.validate_before.get() | date}}" class="tableTd">{{item._info.visaValidation.validate_before.get() | date}}</td>
 
                         <td title="{{item._info.visaValidation.isValid.get()}} %">
                             <!-- <md-checkbox disabled ng-checked="item._info.visaValidation.isValid.get()"></md-checkbox> -->
