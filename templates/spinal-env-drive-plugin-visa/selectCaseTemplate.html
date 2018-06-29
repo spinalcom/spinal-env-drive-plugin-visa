@@ -1,0 +1,35 @@
+
+<style>
+    .ckeckbox {
+        margin-right: 20px;
+    }
+</style>
+
+<md-dialog aria-label="selectCase" style="padding: 30px" >
+
+    <h3>Select Case</h3>
+
+    <md-dialog-content class="myContainer">
+
+        <div layout-gt-sm="row">
+            <md-input-container ng-repeat="myCase in caseToCheck" class="ckeckbox md-block">
+                <md-checkbox name="{{myCase.name}}" ng-model="myCase.checked" required>
+                  {{myCase.name}}
+                </md-checkbox>
+            </md-input-container>
+        </div>
+
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <md-button ng-click="cancel()">
+            Cancel
+        </md-button>
+
+        <md-button ng-click="answer()" class="md-primary">
+            OK
+        </md-button>
+
+    </md-dialog-actions>
+
+</md-dialog>

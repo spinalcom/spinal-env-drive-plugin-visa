@@ -186,11 +186,52 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
             template : $templateCache.get('addItemTemplate.html'),
             parent : angular.element(document.body),
             targetEvent : obj.evt,
-            clickOutsideToClose : true
+            clickOutsideToClose : false
         }).then((result) => {
 
+            $mdDialog.show({
+                controller : ["$scope","$mdDialog","visaManagerService","$compile","$rootScope",($scope,$mdDialog,visaManagerService,$compile,$rootScope) => {
+
+
+                    $scope.caseToCheck = [];
+
+                    visaManagerService.getAllCase().then((el) => {
+                        var myCases = el._info.listCaseValidation.get();
+
+                        for (var i = 0; i < myCases.length; i++) {
+                            myCases[i]["checked"] = true;
+                            $scope.caseToCheck.push(myCases[i]);
+                        }
+
+                    },() => {
+                        console.log("error")
+                    })
+
+
+                    $scope.cancel = () => {
+                        $mdDialog.cancel();
+                    }
+
+                    $scope.answer = () => {
+                        var res = {data : result, caseToCheck : $scope.caseToCheck};
+                        $mdDialog.hide(res);
+                    }
+
+                }],
+                template : $templateCache.get('selectCaseTemplate.html'),
+                parent : angular.element(document.body),
+                targetEvent : obj.evt,
+                clickOutsideToClose : false
+            }).then((result) => {
+                visaManagerService.addItemToValidate(result.data,result.data.path,result.caseToCheck);
+            },() => {
+                console.log("canceled")
+            })
+
+            /*
             // Appel à la fonction addItemToValidate du factory
             visaManagerService.addItemToValidate(result,result.path);
+            */
 
         },() => {
             console.log("error");

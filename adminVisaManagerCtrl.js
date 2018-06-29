@@ -31,8 +31,6 @@
                             }
                         }
                     }
-
-                    visaManagerService.getRemainingDay($scope.allItems);
                     
                 },(err) => {
                     console.log(err)
@@ -618,6 +616,32 @@
     }
 
 
+    $scope.getDateInfo = (item) => {
+        var detail = {};
+
+        var jourRestant = visaManagerService.getRemainingDay(item);
+        var percentValid = item._info.visaValidation.isValid.get();
+
+        detail['days'] = jourRestant;
+
+        if(jourRestant <= 3 && percentValid != 100) {
+
+            detail["icon"] = "exclamation";
+            detail["color"] = "red";
+
+        } else if(jourRestant > 3 && jourRestant <= 7 && percentValid != 100) {
+
+            detail["icon"] = "exclamation-triangle";
+            detail["color"] = "orange";
+
+        } else {
+            detail["icon"] = "check";
+            detail["color"] = "green";
+        }
+
+        return detail;
+
+    }
 
     }])
 })();

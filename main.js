@@ -41,6 +41,9 @@ require('./changeDatePickerFormat');
         },{
           uri : '../templates/spinal-env-drive-plugin-visa/permissionTemplate.html',
           name : 'permissionTemplate.html'
+        },{
+          uri : '../templates/spinal-env-drive-plugin-visa/selectCaseTemplate.html',
+          name : 'selectCaseTemplate.html'
         }];
 
 

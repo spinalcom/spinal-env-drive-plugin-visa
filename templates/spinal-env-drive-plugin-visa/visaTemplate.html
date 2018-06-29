@@ -68,12 +68,13 @@
             <table class="visaTable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th  style="width: 15%" title="name">Name</th>
-                        <th  style="width: 30%" title="Path">Path</th>
-                        <th ng-repeat="header in headerList track by $index" title="{{header.name.get() | uppercase}}">{{header.name.get() | uppercase}}</th>
-                        <th title="Date" style="width: 10%">Creation Date</th>
-                        <th style="width: 10%" title="validate before">Validate Before</th>
-                        <th title="State" style="width: 10%">%</th>
+                        <th title="name">Name</th> <!-- style="width: 15%" -->
+                        <th title="Path">Path</th> <!-- style="width: 30%" -->
+                        <th title="Message">Message</th> <!-- style="width: 20%" -->
+                        <th ng-if="headerList.length > 0" ng-repeat="header in headerList track by $index" title="{{header.name.get() | uppercase}}">{{header.name.get() | uppercase}}</th>
+                        <th title="Date" >Creation Date</th> <!-- style="width: 10%" -->
+                        <th title="validate before">Validate Before</th> <!-- style="width: 10%" -->
+                        <th title="State" >%</th> <!-- style="width: 10%" -->
                     </tr>
                 </thead>
 
@@ -81,7 +82,7 @@
                     <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid  track by $index">
                         <td title="{{item.name.get()}}">{{item.name.get()}}</td>
                         <td title="{{item._info.visaValidation.path.get()}}">{{item._info.visaValidation.path.get()}}</td>
-
+                        <td title="{{item._info.visaValidation.message.get()}}">{{item._info.visaValidation.message.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <md-checkbox disabled ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>

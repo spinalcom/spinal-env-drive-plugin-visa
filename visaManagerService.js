@@ -170,12 +170,27 @@
         }
 
 
+        factory.CanBeChecked = (id,listCase) => {
+            for (var i = 0; i < listCase.length; i++) {
+                if(listCase[i].id == id) {
+                    if(listCase[i].checked) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+
         /****
          * 
          * Ajouter un item à valider
          * 
          */
-        factory.addItemToValidate = (data,path) => {
+        factory.addItemToValidate = (data,path,caseToCheck) => {
 
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
@@ -184,7 +199,7 @@
 
             if(visaStateFolder && item) {
                 for (var i = 0; i < factory.allCases.length; i++) {
-                    myList.push({id : factory.allCases[i].id.get(), name : factory.allCases[i].name.get(), users : factory.allCases[i].users.get()});
+                    myList.push({id : factory.allCases[i].id.get(), name : factory.allCases[i].name.get(), users : factory.allCases[i].users.get(),canBeChecked : factory.CanBeChecked(factory.allCases[i].id.get(),caseToCheck)});
                 }
 
                 factory.addPluginInfo(item,path,data,myList,() => {
@@ -260,7 +275,7 @@
 
         factory.AddCase = (allItems,x) => {
             for (var i = 0; i < allItems.length; i++) {
-                allItems[i]._info.visaValidation.validation.push(new validModel(x.id,x.name,x.users));
+                allItems[i]._info.visaValidation.validation.push(new validModel(x.id,x.name,x.users,true));
             }
         }
 
@@ -290,18 +305,18 @@
 
         }
 
-        factory.getRemainingDay = (allList,item = null) => {
+        factory.getRemainingDay = (item) => {
             var div = 86400000;
             var toDay = Date.now() / div; //convertir toDay en nbreDeJour
 
-            for (var i = 0; i < allList.length; i++) {
-                var expiration = allList[i]._info.visaValidation.validate_before.get() / div;
-                console.log(new Number(expiration - toDay).toFixed(0));
-            }
+            // for (var i = 0; i < allList.length; i++) {
+            //     var expiration = allList[i]._info.visaValidation.validate_before.get() / div;
+            //     console.log(new Number(expiration - toDay).toFixed(0));
+            // }
 
-            // var expiration = item._info.visaValidation.validate_before.get() / div;
+            var expiration = item._info.visaValidation.validate_before.get() / div;
 
-            // return new Number(expiration - toDay).toFixed(0);
+            return new Number(expiration - toDay).toFixed(0);
 
         }
 

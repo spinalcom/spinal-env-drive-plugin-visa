@@ -1,11 +1,12 @@
 
 var validModel = class validModel extends Model {
-    constructor(id,name,users) {
+    constructor(id,name,users,canBeChecked) {
         super();
         this.add_attr({
             id : id,
             name : name,
-            valid : false,
+            canBeChecked: canBeChecked,
+            valid : !canBeChecked ? true : false,
             users : users
         })
     }
@@ -20,7 +21,7 @@ var VisaModel = class VisaModel extends Model {
         var x = new Lst();
         if(myList) {
             for (var i = 0; i < myList.length; i++) {
-                var obj = new validModel(myList[i].id,myList[i].name,myList[i].users);
+                var obj = new validModel(myList[i].id,myList[i].name,myList[i].users,myList[i].canBeChecked);
                 x.push(obj);
             }
         }
