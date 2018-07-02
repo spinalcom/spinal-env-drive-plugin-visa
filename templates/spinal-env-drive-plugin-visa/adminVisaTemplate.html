@@ -119,14 +119,14 @@
                 <tbody>
                     <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid  track by $index">
                         <td style="text-align : center" title="You have {{getDateInfo(item)['days']}} day(s) left to validate">
-                                <i ng-style="{'color' : getDateInfo(item)['color']}" class="fa fa-{{getDateInfo(item)['icon']}}"></i>
+                                <i ng-style="{'color' : getDateInfo(item)['color']}" class="{{getDateInfo(item)['icon']}}"></i>
                         </td>
 
                         <td title="{{item.name.get()}}" class="tableTd">{{item.name.get()}}</td>
                         <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
                         <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
-                            <md-checkbox aria-label="checkbox" ng-disabled="!j.canBeChecked.get()" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                            <md-checkbox aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
                         </td>
                         
                         <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>

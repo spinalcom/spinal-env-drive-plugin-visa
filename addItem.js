@@ -223,7 +223,15 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 targetEvent : obj.evt,
                 clickOutsideToClose : false
             }).then((result) => {
-                visaManagerService.addItemToValidate(result.data,result.data.path,result.caseToCheck);
+
+                var it = FileSystem._objects[result.data.itemId];
+               
+                if(it._info.model_type.get().toLowerCase() == "directory") {
+                    visaManagerService.addFolderToValidate(result.data,result.data.path,result.caseToCheck);
+                } else {
+                    visaManagerService.addItemToValidate(result.data,result.data.path,result.caseToCheck);
+                }
+
             },() => {
                 console.log("canceled")
             })

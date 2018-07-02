@@ -8,7 +8,12 @@
         $scope.searchText = "";
         $scope.itemValid = "all";
 
-
+      /****
+     * 
+     * Initialisation pour recuperer tous les fichiersauthService
+     * et créer le dossier __visa__
+     * 
+     */
         init.then(() => {
           visaManagerService.loadPage.bind(() => {
 
@@ -40,6 +45,10 @@
 
         $scope.headerList;
 
+
+        /***
+         * Recuperer toutes les cases à cocher
+         */
         visaManagerService.getAllCase()
           .then(() => {
             visaManagerService.allCases.bind(() => {
@@ -47,27 +56,30 @@
             })
           })
 
-        $scope.checkCase = (id,listValidation) => {
-          let mod = FileSystem._objects[id];
+        // $scope.checkCase = (id,listValidation) => {
+        //   let mod = FileSystem._objects[id];
           
-          if(mod) {
-            mod.valid.set(!mod.valid.get());
-            $scope.checkValidation(listValidation);
-          }
-        }
+        //   if(mod) {
+        //     mod.valid.set(!mod.valid.get());
+        //     $scope.checkValidation(listValidation);
+        //   }
+        // }
 
-        $scope.checkValidation = (listValidation) => {
-          for (var i = 0; i < listValidation.validation.length; i++) {
-            if(!listValidation.validation[i].valid.get()) {
-              listValidation.isValid.set(false);
-              return;
-            }
-          }
+        // $scope.checkValidation = (listValidation) => {
+        //   for (var i = 0; i < listValidation.validation.length; i++) {
+        //     if(!listValidation.validation[i].valid.get()) {
+        //       listValidation.isValid.set(false);
+        //       return;
+        //     }
+        //   }
 
-          listValidation.isValid.set(true);
+        //   listValidation.isValid.set(true);
 
-        }
-
+        // }
+        
+        /****
+         * Drag and drop
+         */
         $scope.folderDropCfg = {
             "drop": (event) => {
               event.stopPropagation();

@@ -1,7 +1,7 @@
 (function(){
     angular.module('app.spinal-panel')
-    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary",
-    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary){
+    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary","authService",
+    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary,authService){
 
     $scope.currentPage = 1;
 
@@ -13,7 +13,16 @@
     $scope.searchText = "";
     $scope.itemValid = "all";
 
-
+    $scope.fsdir = [];
+    $scope.all_dir = {};
+    $scope.selected_node = 0;
+    
+    /****
+     * 
+     * Initialisation pour recuperer tous les fichiersauthService
+     * et créer le dossier __visa__
+     * 
+     */
     init.then(() => {
         visaManagerService.loadPage.bind(() => {
             $scope.allItems = [];
@@ -27,10 +36,13 @@
                             var x = values[i];
                             for (let index = 0; index < x.length; index++) {
                                 $scope.allItems.push(x[index]);
+
                                 $scope.$apply();
                             }
                         }
                     }
+
+                    $scope.calculPourcentage();
                     
                 },(err) => {
                     console.log(err)
@@ -41,12 +53,24 @@
 
     })
 
+
+    /****
+     * 
+     * Recuperer toutes les cases à cocher
+     * 
+     */
     allCase.then(() => {
         visaManagerService.allCases.bind(() => {
             $scope.myAllCases = visaManagerService.allCases;
         })
     })
 
+
+    /****
+     * 
+     * Cocher une case
+     * 
+     */
     $scope.checkCase = (id,listValidation) => {
         let mod = FileSystem._objects[id];
         
@@ -57,6 +81,12 @@
 
     }
 
+
+    /****
+     * 
+     * Verifier si un fichier est valide
+     * 
+     */
     $scope.checkValidation = (listValidation) => {
         var nombreSelect = 0;
 
@@ -73,6 +103,12 @@
 
     }
 
+
+    /****
+     * 
+     * Changer de Page
+     * 
+     */
     $scope.goto = (pageNumber) => {
         $scope.currentPage = pageNumber;
         // if(pageNumber == 4) {
@@ -81,6 +117,12 @@
     }
 
 
+
+    /****
+     * 
+     * Ajouter des infos à un dossier
+     * 
+     */
     $scope.addPluginInfo = (item,result,id,callback) => {
         
         if(!item._info.subvisaPlugin) {
@@ -94,6 +136,12 @@
         
     }
 
+
+    /****
+     * 
+     * Supprimer les info d'un dossier ou un fichier
+     * 
+     */
     $scope.removePluginInfo = (item) => {
         if(item.length == 0) {
             var parent_id = spinalFileSystem.folderExplorer_dir[item._ptr.data.value].model;
@@ -112,10 +160,12 @@
         }
     }
 
-    $scope.fsdir = [];
-    $scope.all_dir = {};
-    $scope.selected_node = 0;
 
+    
+    /****
+     * Supprimer un dossier
+     * 
+     */
     $scope.deleteFolder = (obj) => {
         var confirm = $mdDialog.confirm()
         .title('Remove !')
@@ -146,6 +196,11 @@
         }
     }
 
+
+    /****
+     * Créer un dossier
+     * 
+     */
     $scope.createFolder = (obj) => {
         
         var confirm = $mdDialog.prompt()
@@ -189,6 +244,11 @@
     }
 
     
+    /****
+     * 
+     * Créer une action pour les buttons Create Folder, Delete et rename
+     * 
+     */
     $scope.create_action_callback = (node, app) => {
         return function() {
             let share_obj = {
@@ -201,6 +261,11 @@
         };
     };
 
+
+    /****
+     * Renomer un dossier
+     * 
+     */
     $scope.RenameFolder = (obj) => {
         var confirm = $mdDialog.prompt()
         .title('Folder Name')
@@ -233,6 +298,12 @@
 
     }
 
+
+    /*****
+     * 
+     * Changer d'action (fonction exécutée)
+     * 
+     */
     $scope.changeAction = (app) => {
         if(app.label == "Delete") {
             app.action = $scope.deleteFolder;
@@ -242,6 +313,11 @@
     }
 
 
+    /******
+     * 
+     * Menu du Folder organisation
+     * 
+     */
     $scope.contextMenu = (node) => {
 
         var menu = [
@@ -274,6 +350,11 @@
     };
 
 
+    /***
+     * 
+     * Recuperer l'arborescence des fichiers
+     * 
+     */
     $scope.treeCore = {
         themes: {
             name: "default-dark"
@@ -282,6 +363,11 @@
     };
 
 
+    /****
+     * 
+     * Fonction exécutée à chaque changement dans Folder organisation
+     * 
+     */
     let listener_destructor = spinalFileSystem.subcribe("SPINAL_FS_ONCHANGE",() => {
         spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
             $scope.fsdir = displayFolderService.getFolderJson(res.tree);
@@ -307,6 +393,11 @@
     spinalFileSystem.init();
 
 
+    /****
+     * 
+     * Recuperer le detail des dossiers en format JSON
+     * 
+     */
     spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
 
         var myTree = res.tree.splice(0);
@@ -317,6 +408,13 @@
 
     });
     
+
+
+    /****
+     * 
+     * Recuperer tous les utilisateurs qui peuvent cocher une case
+     * 
+     */
     $scope.displayAllUsers = (users) => {
         var name = "";
         for (var i = 0; i < users.length; i++) {
@@ -327,14 +425,19 @@
     }
 
 
-
-/*------------------------------------------------------- A Modifier -------------------------------------------------*/
-
+    /****
+     * 
+     * Modifier une case à cocher
+     * 
+     */
     $scope.editFileInfo = (ev,item) => {
 
         $mdDialog.show({
             controller: ["$scope",($scope) => {
 
+                /**
+                 * Recuperer tous les utilisateurs
+                 */
                 spinalModelDictionary.init().then(() => {
                     $scope.allUsers = spinalModelDictionary.users.get();
                     
@@ -349,7 +452,14 @@
 
                 $scope.searchText = null;
                 $scope.selectedItem = null;
+                $scope.chip_users = [];
 
+
+                /****
+                 * 
+                 * recuperer les infos la case à Modifier ou à Créer
+                 * 
+                 */
                 if(item) { 
                     $scope.title = "edit case";
                     $scope.name = item.name.get();
@@ -363,10 +473,10 @@
                     $scope.users = []; 
                 }
 
-                
 
-/********************************************************************************************************************************************************************************************/
- 
+                /****
+                 * recuperer les infos de l'utilisateur selectionné
+                 */
                 $scope.createFilterFor = query => {
                     var lowercaseQuery = angular.lowercase(query);
 
@@ -378,6 +488,11 @@
                     };
                 };
 
+
+
+                /****
+                 * Rechercher un utilisateur
+                 */
                 $scope.querySearch = query => {
                     var results = query
                       ? $scope.allUsers.filter($scope.createFilterFor(query))
@@ -385,23 +500,26 @@
                     return results;
                 };
 
+                
+                /*****
+                 * Ajouter un chip au champ de recherche
+                 */
                 $scope.transformChip = function(chip) {
-                    // If it is an object, it's already a known chip
                     if (angular.isObject(chip)) {
                       return chip;
                     }
-                    // Otherwise, create a new one
+
                     return {
                       name: chip,
                       type: "new"
                     };
                 };
 
-                $scope.chip_users = [];
+                
 
-
-/********************************************************************************************************************************************************************************************/
-
+                /****+
+                 * Verifier si l'utilisateur n'est pas present dan la liste
+                 */
                 $scope.userExist = (myArray, item) => {
                     for (var i = 0; i < myArray.length; i++) {
                         if(myArray[i].id == item.id) {
@@ -412,6 +530,12 @@
                     return false;
                 }
 
+
+                /*****
+                 * 
+                 * Ajouter un utilisateur à la liste
+                 * 
+                 */
                 $scope.addUser = () => {
                     for (var i = 0; i < $scope.chip_users.length; i++) {
                         if(!$scope.userExist($scope.users,$scope.chip_users[i])) {
@@ -423,6 +547,9 @@
                 }
 
 
+                /****
+                 * Supprimer un utilisateur de la liste
+                 */
                 $scope.deleteUser = (id) => {
                     for (var i = 0; i < $scope.users.length; i++) {
                         if($scope.users[i].id == id) {
@@ -431,6 +558,7 @@
                         }
                     }
                 }
+
 
                 $scope.cancel = function() {
                     $mdDialog.cancel();
@@ -457,6 +585,7 @@
                     switch (state) {
                         case "add":
                             visaManagerService.AddCase($scope.allItems,{id : item.id,name : item.name,users : item.users});
+                            $scope.calculPourcentage();
                             break;
                         case "edit":
                             var x = new validModel(item.id,item.name,item.users);
@@ -473,6 +602,10 @@
     }
 
 
+
+    /****
+     * Supprimer une case à cocher
+     */
     $scope.deleteValidationCase = (myCase) => {
 
         var confirm = $mdDialog.confirm()
@@ -487,12 +620,16 @@
                 if(visaManagerService.allCases[i].id.get() == myCase.id.get()) {
                     visaManagerService.allCases.splice(i,1);
                     visaManagerService.removeCase($scope.allItems,myCase.id.get());
+                    
                 }
             }
+            $scope.calculPourcentage();
         },() => {});
     }
     
-
+    /****
+     * Recuperer le nombre de fichiers valides et invalides
+     */
     $scope.ItemsValidCount = () => {
         var cptValid = 0;
         var cptInValid = 0;
@@ -508,33 +645,12 @@
 
     }
 
-/*  
-    $scope.drawGraph = () => {
-        var container = document.querySelector("canvas#myChart");
 
-        console.log(container);
-        
-        // var myPieChart = new Chart(ctx,{
-        //     type : 'pie',
-        //     data : {
-        //         datasets : [{
-        //             data : $scope.ItemsValidCount()
-        //             // color : ["green","red"]
-        //         }],
-        //         labels : [
-        //             'Valid',
-        //             'Not Valid'
-        //         ]
-        //     },
-        //     options : {
-        //         color : ["green","red"]
-        //     }
-        // })
-
-    }
-*/
-
-
+    /****
+     * 
+     * Recuperer le nombre de case cocher
+     * 
+     */
     $scope.GetCaseStatistique = () => {
         var pourcentages = [];
 
@@ -566,6 +682,9 @@
 
     }
 
+    /****
+     * Calcul du pourcentage
+     */
     $scope.getPourcentageCase = () => {
         var stat = $scope.GetCaseStatistique();
 
@@ -580,7 +699,9 @@
 
     }
 
-
+    /****
+     * Recuperer le label de toutes les cases
+     */
     $scope.getCaseLabel = () => {
         var stat = $scope.GetCaseStatistique();
 
@@ -594,6 +715,9 @@
     }
 
 
+    /**
+     * Recuperer le backgound (rouge,orange ou vert)
+     */
     $scope.getBackgroundColor = () => {
         var stat = $scope.GetCaseStatistique();
 
@@ -616,6 +740,11 @@
     }
 
 
+    /****
+     * 
+     * Verifier si l'utilisateur respecte le temps de validation d'un fichier
+     * 
+     */
     $scope.getDateInfo = (item) => {
         var detail = {};
 
@@ -624,24 +753,56 @@
 
         detail['days'] = jourRestant;
 
-        if(jourRestant <= 3 && percentValid != 100) {
+        if(jourRestant <= 0 && percentValid != 100){
+            detail["icon"] = "fa fa-times";
+            detail["color"] = "red";
+        }else if(jourRestant <= 3 && jourRestant >= 1 && percentValid != 100) {
 
-            detail["icon"] = "exclamation";
+            detail["icon"] = "fa fa-exclamation";
             detail["color"] = "red";
 
         } else if(jourRestant > 3 && jourRestant <= 7 && percentValid != 100) {
 
-            detail["icon"] = "exclamation-triangle";
+            detail["icon"] = "fa fa-exclamation-triangle";
             detail["color"] = "orange";
 
+        } else if(jourRestant > 7 && percentValid != 100) {
+            detail["icon"] = "fa fa-check";
+            detail["color"] = "green";
         } else {
-            detail["icon"] = "check";
+            detail["icon"] = "fa fa-check-square";
             detail["color"] = "green";
         }
 
         return detail;
 
     }
+
+
+    /**
+     * 
+     * Verifier si un utilisateur peux cocher une case
+     */
+    $scope.userCanCheck = (item) => {
+        var users = item.users.get();
+        var currentUser = authService.get_user();
+
+        return visaManagerService.userCanValid(currentUser,users);
+    }
+
+
+    /****
+     * 
+     * Calculer le pourcentage de validation de tous les fichiers
+     * 
+     */
+    $scope.calculPourcentage = () => {
+        for (var i = 0; i < $scope.allItems.length; i++) {
+            $scope.checkValidation($scope.allItems[i]._info.visaValidation);
+        }
+    }
+    
+
 
     }])
 })();

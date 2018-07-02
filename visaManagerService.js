@@ -5,6 +5,7 @@
     .factory('visaManagerService',["ngSpinalCore","authService","$q",function(ngSpinalCore,authService,$q){
 
         let factory = {};
+
         let user = authService.get_user();
         var initQ;
         var itemQ;
@@ -62,6 +63,20 @@
         }
 
         factory.init()
+
+
+        /****
+         * Recuperer le contenu d'un dossier
+         */
+        factory.loadItem = (item) => {
+            return new Promise((resolve,reject) => {
+                item.load((data) => {
+                    resolve(data)
+                },() => {
+                    reject("error");
+                })
+            })
+        }
 
 
 
@@ -131,13 +146,14 @@
 
         }
 
-
+/*    
         factory.addVisaState = (name,validList) => {   
             var myDirectory = new Directory();
 
             factory.allVisa.add_file(name,myDirectory,{listVisaValidation : validList});    
 
         }
+*/
 
         /***
          * 
@@ -170,6 +186,13 @@
         }
 
 
+
+        /***
+         * 
+         * Verifie si une case peut être cohée ou pas
+         * 
+         */
+
         factory.CanBeChecked = (id,listCase) => {
             for (var i = 0; i < listCase.length; i++) {
                 if(listCase[i].id == id) {
@@ -187,7 +210,7 @@
 
         /****
          * 
-         * Ajouter un item à valider
+         * Ajouter un fichier à valider
          * 
          */
         factory.addItemToValidate = (data,path,caseToCheck) => {
@@ -214,6 +237,12 @@
 
         }  
 
+
+        /***
+         * 
+         * Retourne la liste de toutes les cases à cocher (uniquement le nom des cases)
+         * 
+         */
         factory.ReturnlistCase = (data) => {
             if(!data._info.listCaseValidation) {
                 data._info.add_attr({
@@ -225,6 +254,11 @@
         }
 
 
+        /**
+         * 
+         * Retourne la liste de toutes les cases à cocher
+         * 
+         */
         factory.getAllCase = () => {
             if(itemQ) {
                 return itemQ.promise; 
@@ -244,6 +278,11 @@
         factory.getAllCase();
         
 
+        /****
+         * 
+         * Ajouter une case à la liste des cases à cocher
+         * 
+         */
         factory.AddValidationCase = (result,callback) => {
 
             var myCase;
@@ -273,12 +312,23 @@
         }
 
 
+        /****
+         * 
+         * Ajouter la case qui a été créée à tous les fichiers
+         * 
+         */
         factory.AddCase = (allItems,x) => {
             for (var i = 0; i < allItems.length; i++) {
                 allItems[i]._info.visaValidation.validation.push(new validModel(x.id,x.name,x.users,true));
             }
         }
 
+
+        /****
+         * 
+         * Supprimer une case à cocher
+         * 
+         */
         factory.removeCase = (allItems,id) => {
             for (var i = 0; i < allItems.length; i++) {
                 for (var j = 0; j < allItems[i]._info.visaValidation.validation.length; j++) {
@@ -289,6 +339,12 @@
             }
         }
 
+
+        /****
+         * 
+         * Modifier une case à cocher
+         * 
+         */
         factory.editCase = (allItems,validModel) => {
             for (var i = 0; i < allItems.length; i++) {
                 for (var j = 0; j < allItems[i]._info.visaValidation.validation.length; j++) {
@@ -301,18 +357,45 @@
         }
 
 
-        factory.addFolderToValidate = () => {
+        /****
+         * 
+         * Ajouter tous les fichiers d'un dossier
+         * load
+         */
+        factory.addFolderToValidate = (i,path,caseToCheck) => {
 
+            var folder = FileSystem._objects[i.itemId];
+            var icopy = i;
+            
+
+            if(folder._info.model_type.get().toLowerCase() == "directory") {
+                factory.loadItem(folder).then((data) => {
+
+                    for (var i = 0; i < data.length; i++) {
+                        icopy.itemId = data[i]._server_id;
+
+                        if(data[i]._info.model_type.get().toLowerCase() == "directory"){
+                            factory.addFolderToValidate(icopy,path,caseToCheck);
+                        } else {
+                            factory.addItemToValidate(icopy,path,caseToCheck);
+                        }
+                    }
+
+                },() => {
+
+                })
+            }
         }
 
+
+        /****
+         * 
+         * Return le nombre de jour restant pour valider un fichier
+         * 
+         */
         factory.getRemainingDay = (item) => {
             var div = 86400000;
             var toDay = Date.now() / div; //convertir toDay en nbreDeJour
-
-            // for (var i = 0; i < allList.length; i++) {
-            //     var expiration = allList[i]._info.visaValidation.validate_before.get() / div;
-            //     console.log(new Number(expiration - toDay).toFixed(0));
-            // }
 
             var expiration = item._info.visaValidation.validate_before.get() / div;
 
@@ -320,6 +403,23 @@
 
         }
 
+        /****
+         * 
+         * Verifier si un utilisateur peut cocher une case
+         * 
+         */
+        factory.userCanValid = (user,userList) => {
+            
+            for (var i = 0; i < userList.length; i++) {
+                if(userList[i].name == user.username) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        
         return factory;
 
     }])

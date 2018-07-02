@@ -1,4 +1,10 @@
 
+
+/****
+ * 
+ * Model d'une case à cocher (ajouter à un fichier)
+ * 
+ */
 var validModel = class validModel extends Model {
     constructor(id,name,users,canBeChecked) {
         super();
@@ -11,9 +17,14 @@ var validModel = class validModel extends Model {
         })
     }
 }
-
 module.exports.validModel = validModel;
 
+
+/****
+ * 
+ * Model pour ajouter un les infos sur un fichier
+ * 
+ */
 var VisaModel = class VisaModel extends Model {
 
     constructor(message,state_id,myList,path,date,validateBefore) {
@@ -37,11 +48,14 @@ var VisaModel = class VisaModel extends Model {
         });
     }
 }
-
 module.exports.VisaModel = VisaModel;
 
 
-
+/****
+ * 
+ * Model ajouté à __visa__ pour definir la liste de toutes les cases
+ * 
+ */
 var VisaStateModel = class VisaStateModel extends Model {
     
 
@@ -55,10 +69,15 @@ var VisaStateModel = class VisaStateModel extends Model {
         })
     }
 }
-
 module.exports.VisaStateModel = VisaStateModel;
 
 
+
+/****
+ * 
+ * Model pour savoir si dossier a un sous dossier
+ * 
+ */
 var SubVisaModel = class  SubVisaModel extends Model {
     constructor(name,id) {
         super();
@@ -68,11 +87,15 @@ var SubVisaModel = class  SubVisaModel extends Model {
         })
     }
 }
-
 module.exports.SubVisaModel = SubVisaModel;
 
 
 
+/****
+ * 
+ * Model d'une case à cocher (ajouter à __visa__)
+ * 
+ */
 var CaseValidation = class CaseValidation extends Model {
     constructor(id) {
         super();
@@ -84,6 +107,4 @@ var CaseValidation = class CaseValidation extends Model {
         })
     }
 }
-
-
 module.exports.CaseValidation = CaseValidation;
