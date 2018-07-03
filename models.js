@@ -108,3 +108,21 @@ var CaseValidation = class CaseValidation extends Model {
     }
 }
 module.exports.CaseValidation = CaseValidation;
+
+
+
+/****
+ * Model Message
+ */
+var MessageModel = class MessageModel extends Model {
+    constructor(id,content,user,date) {
+        super();
+        this.add_attr({
+            id : id,
+            content : content,
+            user : user,
+            date : date
+        })
+    }
+}
+module.exports.MessageModel = MessageModel;

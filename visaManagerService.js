@@ -419,6 +419,35 @@
             return false;
         }
 
+
+
+        /****
+         * Recuperer les messages d'un fichier
+         */
+
+         factory.getComments = (item) => {
+            if(!item._info.visaValidation.comments) {
+                item._info.visaValidation.add_attr({
+                    comments : new Lst()
+                })
+            }
+
+            return new Promise((resolve, reject) => {
+                resolve(item._info.visaValidation.comments);
+            });
+
+         }
+
+        
+        /***
+         * Ajouter Comments
+         */
+        factory.AddComments = (item,messageInfo,callback) => {
+            var messageModel = new MessageModel(factory.newGuid(),messageInfo.content,messageInfo.user,Date.now());
+
+            item._info.visaValidation.comments.push(messageModel);
+            callback();
+        }
         
         return factory;
 

@@ -5,6 +5,14 @@
 
     $scope.currentPage = 1;
 
+    $scope.tableMenuContent = [{
+        name : "Comments",
+        icon : "comments"
+    },{
+        name : "Send",
+        icon : "paper-plane"
+    }]
+
     let init = visaManagerService.init()
     let allCase = visaManagerService.getAllCase();
 
@@ -766,11 +774,12 @@
             detail["icon"] = "fa fa-exclamation-triangle";
             detail["color"] = "orange";
 
-        } else if(jourRestant > 7 && percentValid != 100) {
+        // } else if(jourRestant > 7 && percentValid != 100) {
+        //     detail["icon"] = "fa fa-check";
+        //     detail["color"] = "green";
+        } 
+        else if(percentValid == 100){
             detail["icon"] = "fa fa-check";
-            detail["color"] = "green";
-        } else {
-            detail["icon"] = "fa fa-check-square";
             detail["color"] = "green";
         }
 
@@ -801,8 +810,75 @@
             $scope.checkValidation($scope.allItems[i]._info.visaValidation);
         }
     }
-    
 
+
+    /**
+     *  Executer l'action de l'item selectionné dans le menu
+     */
+    $scope.menuItemSelected = (menuItem,file,evt) => {
+        switch (menuItem.name.toLowerCase()) {
+            case "comments":
+                $scope.addComment(file,evt);
+                break;
+            case "send":
+                $scope.sendItem(file,evt);
+                break;
+                
+        }
+    }
+
+    
+    /***
+     * 
+     * ajouter un commentaire à un fichier
+     * 
+     */
+    $scope.addComment = (item,evt) => {
+        $mdDialog.show({
+            controller : ["$scope","$mdDialog",function($scope,$mdDialog) {
+
+                visaManagerService.getComments(item).then((comments) => {
+                        $scope.messages = comments;
+                    },() => {})
+
+                $scope.messageInfo = {
+                    user : authService.get_user(),
+                    content : ""
+                }
+                
+                $scope.addComment = () => {
+                    visaManagerService.AddComments(item,$scope.messageInfo,() => {
+                        $scope.messageInfo.content = "";
+                    })
+                }
+
+                $scope.isUserMessage = (messageText) => {
+                    if(messageText.user.username.get() == $scope.messageInfo.user.username)
+                        return true;
+                    return false;
+                }
+
+                $scope.cancel = () => {
+                    $mdDialog.cancel()
+                }
+            }],
+            template : $templateCache.get('commentTemplate.html'),
+            parent : angular.element(document.body),
+            targetEvent : evt,
+            clickOutsideToClose : true
+        }).then((result) => {
+
+        },() => {})
+    }
+
+
+    /***
+     * 
+     * Envoyer fichier à l'utilisateur une fois validé
+     */
+    $scope.sendItem = (item,evt) => {
+        console.log("send item",item);
+    }
 
     }])
 })();
