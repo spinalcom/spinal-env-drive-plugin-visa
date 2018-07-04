@@ -20,10 +20,16 @@
     $scope.allItems = [];
     $scope.searchText = "";
     $scope.itemValid = "all";
+    $scope.boxValid = "all";
 
     $scope.fsdir = [];
     $scope.all_dir = {};
     $scope.selected_node = 0;
+
+
+    $scope.boxChanged = (val) => {
+        $scope.boxValid = val.boxValid;
+    }
     
     /****
      * 
@@ -878,6 +884,26 @@
      */
     $scope.sendItem = (item,evt) => {
         console.log("send item",item);
+    }
+
+
+    /***
+     * Afficher les cases en fonction du filter
+     */
+    $scope.canBeDisplay = (caseItem) => {
+
+        if($scope.boxValid == "allbox") {
+            return true;
+        } else if($scope.boxValid == "validbox" && (caseItem.canBeChecked.get() && $scope.userCanCheck(caseItem))) {
+            return true;
+        } else if ($scope.boxValid == "notValidbox" && (!caseItem.canBeChecked.get() || !$scope.userCanCheck(caseItem))) {
+            return true;
+        } else if($scope.boxValid == "boxnotValidbox" && caseItem.canBeChecked.get() && $scope.userCanCheck(caseItem) && !caseItem.valid.get()) {
+            return true;
+        }
+
+        return false;
+
     }
 
     }])

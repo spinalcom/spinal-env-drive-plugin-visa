@@ -87,18 +87,27 @@
     <div class="content" ng-if="currentPage == 1">
         <div class="search">
             <md-input-container class="md-block">
-                <label>Search</label>
-                <input  ng-model="searchText"/>
+                <input  ng-model="searchText" placeholder="search by name or path"/>
             </md-input-container>
         </div>
 
 
         <md-input-container class="md-block" flex-gt-sm>
-            <label>Display</label>
+            <label>Item Displayed</label>
             <md-select ng-model="itemValid">
               <md-option value="all">All</md-option>
               <md-option value="notValid">Not valid</md-option>
               <md-option value="valid">valid</md-option>
+            </md-select>
+        </md-input-container>
+
+        <md-input-container class="md-block" flex-gt-sm>
+            <label>box Displayed</label>
+            <md-select ng-model="boxValid" ng-change="boxChanged(this)">
+                <md-option selected value="allbox">All</md-option>
+                <md-option value="validbox">Can be validate</md-option>
+                <md-option value="notValidbox">Can't be validate</md-option>
+                <md-option value="boxnotValidbox"> Box Not Valid</md-option>
             </md-select>
         </md-input-container>
 
@@ -109,10 +118,11 @@
             <table class="visaTable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>
+                        </th>
                         <th class="tableTd"  title="name">Name</th> <!-- style="width: 15%" -->
                         <th class="tableTd"  title="Path">Path</th> <!-- style="width: 20%"-->
-                        <th class="tableTd"  title="Message">Message</th> <!-- style="width: 20%" -->
+                        <th class="tableTd"  title="Message">Description</th> <!-- style="width: 20%" -->
                         <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
                         <th class="tableTd"  title="Date">Creation Date</th> <!-- style="width: 10%" -->
                         <th class="tableTd"  title="validate before">Validate Before</th> <!-- style="width: 10%" -->
@@ -131,7 +141,9 @@
                         <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
                         <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
-                            <md-checkbox  aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                            <!-- <md-checkbox  aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
+                            <md-checkbox aria-label="checkbox" ng-if="canBeDisplay(j)" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                            <!-- {{canBeDisplay(j)}} -->
                         </td>
                         
                         <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>

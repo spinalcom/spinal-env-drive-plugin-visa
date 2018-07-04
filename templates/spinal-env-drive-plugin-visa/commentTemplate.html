@@ -16,7 +16,6 @@
     .messageContainer {
         width:  100%;
         height: 600px;
-        border: 1px solid white;
         overflow: hidden;
         overflow-y: auto;
         margin-top: 20px;
@@ -52,10 +51,9 @@
     }
 
     .avatar-text {
-        font-size: 20px;
-        border: 1px solid #fff;
+        font-size: 12px;
         text-align: center;
-        border-radius: 0 !important;
+        border-radius: 0px !important;
         padding-top: 5px;
         text-overflow: ellipsis;
         overflow: hidden;
@@ -65,16 +63,41 @@
     .md-list-item-text {
         padding: 5px;
         border-radius: 5px;
+        word-break: break-all;
+    }
+
+    .md-list-item-text p {
+        color: #000000 !important;
     }
 
     .userMessage {
-        background: blue;
+        background: #208cfb;
     }
 
     .notUserMessage {
-        background: red;
+        background: #e9e9e9;
     }
 
+    .detail {
+        width: 100%;
+        font-size: 10px;
+        margin-top: 10px;
+        min-height: 15px;
+        color: black;
+        padding: 2px;
+    }
+
+    .detail .delete {
+        float: right;
+    }
+
+    .detail .delete:hover {
+        cursor: pointer;
+    }
+
+    .detail .date {
+        float: left;
+    }
 
 
 </style>
@@ -83,15 +106,25 @@
 
     <span class="close" ng-click="cancel()">X</span>
 
-    <md-list class="messageContainer">
+    <md-list class="messageContainer" scroll-bottom>
 
-        <md-list-item class="md-3-line md-long-text" ng-repeat="message in messages">
+        <md-list-item ng-if="messages.length > 0" class="md-3-line md-long-text" ng-repeat="message in messages">
             <div class="avatar-text md-avatar" title="{{message.user.username.get()}}">{{message.user.username.get().toUpperCase()}}</div>
             <div ng-class="[{userMessage : isUserMessage(message),notUserMessage : !isUserMessage(message)}, 'md-list-item-text']">
               <p>
                 {{message.content.get()}}
               </p>
+              
+                <div class="detail">
+                    <span class="date">{{message.date.get() | date}}</span>
+                    <span class="delete">X</span>
+                </div>
             </div>
+            
+        </md-list-item>
+
+        <md-list-item ng-if="messages.length == 0">
+            No Message
         </md-list-item>
 
     </md-list>

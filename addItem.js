@@ -71,7 +71,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                     $scope.allVisa = data;
                 })
 
-                $scope.message = "no Message !";
+                $scope.message = "";
                 $scope.visa = -1;
                 $scope.nbrSelect = 0;
                 $scope.dateToValid = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
@@ -167,6 +167,15 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 }
 
                 $scope.answer = function() {
+
+                    
+
+                    if($scope.message.trim().length == 0) {
+                        $scope.message = "-";
+                    } else {
+                        $scope.message = $scope.message.trim();
+                    }
+
                     var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id, validateBefore : new Date($scope.dateToValid).getTime()}
                     
                     result["path"] = "/" + FileSystem._objects[$scope.visaSelected].name.get();
@@ -243,7 +252,11 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
         },() => {
             console.log("error");
-        })   
+        })
+        
+        
+        
+
     }
 
 }
