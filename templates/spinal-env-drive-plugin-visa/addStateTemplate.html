@@ -1,18 +1,18 @@
 
 
 <md-dialog aria-label="addLink" style="padding : 30px;">
-    <h3>Add Visa</h3>
+    <h3>Ajouter un processe Visa</h3>
     <form ng-cloak>
 
         <md-dialog-content class="myContainer">
             
             <md-input-container class="md-block" flex-gt-sm>
-                <label>name</label>
+                <label>Nom</label>
                 <input ng-model="name">
             </md-input-container>
             
             <md-list>
-                <md-list-item ng-if="visaStates.length == 0">No State</md-list-item>
+                <md-list-item ng-if="visaStates.length == 0">Aucun visa processe créé</md-list-item>
                 <md-list-item ng-repeat="item in visaStates track by $index">
                     <p>{{item}}</p>
                 </md-list-item>
@@ -26,7 +26,7 @@
                 </md-input-container>
         
                 <md-input-container>
-                <md-button ng-click="addState()">Add</md-button>
+                <md-button ng-click="addState()">Ajouter</md-button>
                 </md-input-container>
             </div>
 
@@ -35,7 +35,7 @@
 
         <md-dialog-actions layout="row">
             <md-button ng-click="cancel()">
-            Cancel
+            Annuler
             </md-button>
             <md-button ng-click="answer()" class="md-primary">
                 OK

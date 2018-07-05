@@ -149,7 +149,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.selectedChange = (visaSelected) => {
                     var parent = document.getElementsByClassName("displaySelect")[0];
                     parent.innerHTML = "";
-
+                    $scope.visa = visaSelected;
                     $scope.nbrSelect = 0;
 
                     var content = angular.element(parent);
@@ -236,8 +236,10 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 var it = FileSystem._objects[result.data.itemId];
                
                 if(it._info.model_type.get().toLowerCase() == "directory") {
+                    console.log("directory")
                     visaManagerService.addFolderToValidate(result.data,result.data.path,result.caseToCheck);
                 } else {
+                    console.log("item")
                     visaManagerService.addItemToValidate(result.data,result.data.path,result.caseToCheck);
                 }
 

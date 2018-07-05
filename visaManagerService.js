@@ -215,6 +215,9 @@
          */
         factory.addItemToValidate = (data,path,caseToCheck) => {
 
+
+            console.log(data);
+
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
             let myList = [];
@@ -447,6 +450,21 @@
 
             item._info.visaValidation.comments.push(messageModel);
             callback();
+        }
+
+
+        /****
+         * Supprimer un message
+         */
+        factory.deleteComment = (messages,message) => {
+            for (var i = 0; i < messages.length; i++) {
+                if(messages[i].id.get() == message.id.get()) {
+
+                    messages.splice(i,1);
+                    break;
+                    
+                }
+            }
         }
         
         return factory;

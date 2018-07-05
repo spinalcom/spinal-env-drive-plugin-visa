@@ -117,7 +117,7 @@
               
                 <div class="detail">
                     <span class="date">{{message.date.get() | date}}</span>
-                    <span class="delete">X</span>
+                    <span ng-if="isUserMessage(message)"class="delete" ng-click="deleteMessage(message)">X</span>
                 </div>
             </div>
             

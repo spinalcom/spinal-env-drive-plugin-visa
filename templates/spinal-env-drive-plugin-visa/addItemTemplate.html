@@ -7,7 +7,7 @@
     }
 
     .datePicker {
-        margin-top: 10px;
+        margin-top: 30px;
     }
 
     .md-datepicker-calendar-pane.md-pane-open {
@@ -18,13 +18,13 @@
 
 
 <md-dialog aria-label="addLink" style="padding : 30px;">
-    <h3>Send To Validate</h3>
+    <h3>Ajouter au visa</h3>
     <form ng-submit="answer()" ng-cloak>
 
         <md-dialog-content class="myContainer">
             
             <md-input-container class="input_header md-block" flex-gt-sm>
-                <label>Visa state</label>
+                <label>Visa</label>
                 <md-select required ng-model="visaSelected" ng-change="selectedChange(visaSelected)">
                   <md-option ng-repeat="visa in allVisa track by $index" value="{{visa._server_id}}">
                     {{visa.name}}
@@ -39,13 +39,13 @@
 
 
             <md-input-container class="md-block datePicker">
-                <label>To Valid before</label>
+                <label>Date Limite</label>
                 <md-datepicker  md-open-on-focus md-hide-icons="all" md-min-date="minDate" ng-model="dateToValid"></md-datepicker>
             </md-input-container>
 
 
             <md-input-container class="input_header md-block">
-                <label>Message</label>
+                <label>Description</label>
                 <textarea ng-model="message" rows="3"></textarea>
             </md-input-container>
 
@@ -54,7 +54,7 @@
 
         <md-dialog-actions layout="row">
             <md-button ng-click="cancel()">
-            Cancel
+            Annuler
             </md-button>
             <md-button ng-if="formValid" type="submit" class="md-primary">
                 OK

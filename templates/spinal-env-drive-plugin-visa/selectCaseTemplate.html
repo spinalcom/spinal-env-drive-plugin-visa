@@ -7,13 +7,13 @@
 
 <md-dialog aria-label="selectCase" style="padding: 30px" >
 
-    <h3>Select Case</h3>
+    <h3>Choisissez les Cases à Valider</h3>
 
     <md-dialog-content class="myContainer">
 
         <div layout-gt-sm="row">
-            <md-input-container ng-repeat="myCase in caseToCheck" class="ckeckbox md-block">
-                <md-checkbox name="{{myCase.name}}" ng-model="myCase.checked" required>
+            <md-input-container  ng-repeat="myCase in caseToCheck" class="ckeckbox md-block">
+                <md-checkbox title="{{myCase.description ? myCase.description : 'no description'}}"   name="{{myCase.name}}" ng-model="myCase.checked" required>
                   {{myCase.name}}
                 </md-checkbox>
             </md-input-container>
@@ -23,7 +23,7 @@
 
     <md-dialog-actions layout="row">
         <md-button ng-click="cancel()">
-            Cancel
+            Annuler
         </md-button>
 
         <md-button ng-click="answer()" class="md-primary">

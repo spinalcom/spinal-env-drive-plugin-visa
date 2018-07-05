@@ -780,9 +780,9 @@
             detail["icon"] = "fa fa-exclamation-triangle";
             detail["color"] = "orange";
 
-        // } else if(jourRestant > 7 && percentValid != 100) {
-        //     detail["icon"] = "fa fa-check";
-        //     detail["color"] = "green";
+        } else if(jourRestant > 7 && percentValid != 100) {
+            detail["icon"] = "fa fa-asterisk";
+            detail["color"] = "green";
         } 
         else if(percentValid == 100){
             detail["icon"] = "fa fa-check";
@@ -862,6 +862,21 @@
                     if(messageText.user.username.get() == $scope.messageInfo.user.username)
                         return true;
                     return false;
+                }
+
+                $scope.deleteMessage = (message) => {
+
+                    // var confirm = $mdDialog.confirm()
+                    // .title('Remove !')
+                    // .textContent('Do you want remove it ?')
+                    // .ariaLabel('remove')
+                    // .ok('Yes')
+                    // .cancel('No');
+                    
+                    // $mdDialog.show(confirm).then(() => {
+                        visaManagerService.deleteComment($scope.messages,message);
+                    // },() => {})
+                    
                 }
 
                 $scope.cancel = () => {

@@ -59,27 +59,27 @@ require('./caseFilter');
         var plateform = /drive/.exec(window.location.pathname);
 
 
-        if(plateform) {
-          goldenLayoutService.registerPanel({
-            id: "spinal-env-drive-plugin-visa",
-            name: "Visa Profil",
-            cfg: {
-              isClosable: true,
-              title: "Visa Profil",
-              type: 'component',
-              width: 50,
-              componentName: 'SpinalHome',
-              componentState: {
-                template: 'visaTemplate.html',
-                module: 'app.spinal-visa',
-                controller: 'visaManagerCtrl'
-              }
-            }
-          });
-        } else {
+        // if(plateform) {
+        //   goldenLayoutService.registerPanel({
+        //     id: "spinal-env-drive-plugin-visa",
+        //     name: "Visa Profil",
+        //     cfg: {
+        //       isClosable: true,
+        //       title: "Visa Profil",
+        //       type: 'component',
+        //       width: 50,
+        //       componentName: 'SpinalHome',
+        //       componentState: {
+        //         template: 'visaTemplate.html',
+        //         module: 'app.spinal-visa',
+        //         controller: 'visaManagerCtrl'
+        //       }
+        //     }
+        //   });
+        // } //else {
           goldenLayoutService.registerPanel({
             id: "spinal-env-drive-plugin-admin-visa",
-            name: "Admin Visa",
+            name: "Visa",
             cfg: {
               isClosable: true,
               title: "Admin Visa",
@@ -93,7 +93,7 @@ require('./caseFilter');
               }
             }
           });
-        }
+        // }
 
         if(plateform) {
           spinalDrive_Env.add_applications('FileExplorer', new SpinalDrive_App_FileExplorer_visa());
