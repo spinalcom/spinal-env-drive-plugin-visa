@@ -14,6 +14,7 @@ require('./case.progress.directive');
 require('./changeDatePickerFormat');
 require('./messageScroll.directive');
 require('./caseFilter');
+require('./itemFilter');
 
 
 (function () {

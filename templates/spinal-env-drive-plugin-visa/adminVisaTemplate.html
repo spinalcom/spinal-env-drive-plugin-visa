@@ -119,7 +119,33 @@
                 <thead>
                     <tr>
                         <th style="text-align : center">
-                            <i class="fa fa-sort"></i>
+                            <md-input-container class="md-block" flex-gt-sm>
+                                <md-select ng-model="filterData">
+                                    <md-option selected value="all">All</md-option>
+
+                                    <md-option value="times">
+                                        <i style="color: red" class="fa fa-times"></i>
+                                    </md-option>
+
+                                    <md-option value="exclamation">
+                                        <i style="color: red" class="fa fa-exclamation"></i>
+                                    </md-option>
+
+                                    <md-option value="valid">
+                                        <i style="color: green" class="fa fa-check"></i>
+                                    </md-option>
+
+                                    <md-option value="cool">
+                                        <i style="color: green" class="fa fa-asterisk"></i>
+                                    </md-option>
+                                    
+                                    <md-option value="warning">
+                                        <i style="color: orange" class="fa fa-exclamation-triangle"></i>
+                                    </md-option>
+
+
+                                </md-select>
+                            </md-input-container>
                         </th>
                         <th class="tableTd"  title="name">Nom</th> <!-- style="width: 15%" -->
                         <th class="tableTd"  title="Path">Lien</th> <!-- style="width: 20%"-->
@@ -133,7 +159,7 @@
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid  track by $index">
+                    <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid | itemFilter:filterData  track by $index">
                         <td style="text-align : center" title="You have {{getDateInfo(item)['days']}} day(s) left to validate">
                                 <i ng-style="{'color' : getDateInfo(item)['color']}" class="{{getDateInfo(item)['icon']}}"></i>
                         </td>
@@ -143,8 +169,23 @@
                         <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td>
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <!-- <md-checkbox  aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
-                            <md-checkbox aria-label="checkbox" ng-if="canBeDisplay(j)" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox>
+                            <!-- <md-checkbox aria-label="checkbox" ng-if="canBeDisplay(j)" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
                             <!-- {{canBeDisplay(j)}} -->
+
+                            <md-input-container ng-if="canBeDisplay(j)">
+                                <md-select aria-label="checkbox" style="text-align: center" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-change="checkCase(j._server_id,item._info.visaValidation,checkbox)">
+                                  <md-option ng-selected="!j.valid.get()" value="{{false}}">
+                                    <i style="color: red" class="fa fa-times-circle"></i>
+                                  </md-option>
+
+                                  <md-option ng-selected="j.valid.get()"  value="{{true}}">
+                                    <i style="color: green" class="fa fa-check-square"></i>
+                                  </md-option>
+
+                                </md-select>
+                            </md-input-container>
+
+
                         </td>
                         
                         <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>

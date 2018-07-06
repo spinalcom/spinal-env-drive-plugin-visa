@@ -1,7 +1,7 @@
 (function(){
     angular.module('app.spinal-panel')
-    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary","authService",
-    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary,authService){
+    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary","authService","$filter",
+    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary,authService,$filter){
 
     $scope.currentPage = 1;
 
@@ -85,11 +85,13 @@
      * Cocher une case
      * 
      */
-    $scope.checkCase = (id,listValidation) => {
+    $scope.checkCase = (id,listValidation,checkbox) => {
         let mod = FileSystem._objects[id];
         
+        console.log(checkbox);
+
         if(mod) {
-            mod.valid.set(!mod.valid.get());
+            mod.valid.set(checkbox);
             $scope.checkValidation(listValidation);
         }
 
@@ -919,6 +921,34 @@
 
         return false;
 
+    }
+
+
+
+    /****
+     * Classer par validation
+     */
+    $scope.orderByValidation = (iSelect) => {
+        var itemFilter = $filter('itemFilter');
+
+        switch (iSelect) {
+            case "all":
+                $scope.allItems = itemFilter()
+                break;
+
+            case "times":
+                break;
+            
+            case "exclamation":
+                break;
+
+            case "valid":
+                break;
+
+            case "warning":
+                break;
+                
+        }
     }
 
     }])
