@@ -118,7 +118,7 @@
             <table class="visaTable" style="width: 100%">
                 <thead>
                     <tr>
-                        <th style="text-align : center">
+                        <th style="text-align : center" title="filtrer par validation">
                             <md-input-container class="md-block" flex-gt-sm>
                                 <md-select ng-model="filterData">
                                     <md-option selected value="all">All</md-option>
@@ -147,13 +147,20 @@
                                 </md-select>
                             </md-input-container>
                         </th>
-                        <th class="tableTd"  title="name">Nom</th> <!-- style="width: 15%" -->
-                        <th class="tableTd"  title="Path">Lien</th> <!-- style="width: 20%"-->
-                        <th class="tableTd"  title="Message">Description</th> <!-- style="width: 20%" -->
-                        <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index">{{case.name.get() | uppercase}}</th>
-                        <th class="tableTd"  title="Date">Date de Creation</th> <!-- style="width: 10%" -->
-                        <th class="tableTd"  title="validate before">Date Limite</th> <!-- style="width: 10%" -->
-                        <th class="tableTd"  title="State">%</th> <!-- style="width: 10%" -->
+                        <th class="tableTd"  title="Nom">Nom</th>
+                        <th class="tableTd"  title="Chemin">Lien</th>
+                        <th class="tableTd"  title="Description">Description</th>
+
+
+                        <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" ng-click="sortByValidation()">
+                            {{case.name.get() | uppercase}}
+                            <i class="fa fa-sort"></i>
+                        </th>
+
+
+                        <th class="tableTd"  title="Date de creation">Date de Creation</th>
+                        <th class="tableTd"  title="Date limite de validation">Date Limite</th>
+                        <th class="tableTd"  title="Pourcentage de validation">%</th>
                         <th></th>
                     </tr>
                 </thead>

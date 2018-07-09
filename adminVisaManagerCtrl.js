@@ -951,5 +951,12 @@
         }
     }
 
+    /****
+     * Trier par validation
+     */
+    $scope.sortByValidation = () => {
+        
+    }
+
     }])
 })();

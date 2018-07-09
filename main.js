@@ -3,7 +3,7 @@ require('./visaManagerService');
 require('./addItem');
 require('./folder.directive');
 require('./adminVisaManagerCtrl');
-require('./adminVisaManagerService');
+// require('./adminVisaManagerService');
 require('./models');
 require('./displayFolderService');
 require('./searchFilter');
