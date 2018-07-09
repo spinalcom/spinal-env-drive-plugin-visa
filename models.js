@@ -12,7 +12,7 @@ var validModel = class validModel extends Model {
             id : id,
             name : name,
             canBeChecked: canBeChecked,
-            valid : !canBeChecked ? true : false,
+            valid : !canBeChecked ? 1 : -1,
             users : users
         })
     }

@@ -21,6 +21,7 @@
     $scope.searchText = "";
     $scope.itemValid = "all";
     $scope.boxValid = "all";
+    $scope.filterData = "all";
 
     $scope.fsdir = [];
     $scope.all_dir = {};
@@ -87,8 +88,6 @@
      */
     $scope.checkCase = (id,listValidation,checkbox) => {
         let mod = FileSystem._objects[id];
-        
-        console.log(checkbox);
 
         if(mod) {
             mod.valid.set(checkbox);
@@ -107,7 +106,7 @@
         var nombreSelect = 0;
 
         for (var i = 0; i < listValidation.validation.length; i++) {
-            if(listValidation.validation[i].valid.get()) {
+            if(listValidation.validation[i].valid.get() == 1) {
                 nombreSelect++;
             }
         }
@@ -643,6 +642,7 @@
         },() => {});
     }
     
+    
     /****
      * Recuperer le nombre de fichiers valides et invalides
      */
@@ -678,11 +678,11 @@
 
             for (var j = 0; j < $scope.allItems.length; j++) {
                 for (var k = 0; k < $scope.allItems[j]._info.visaValidation.validation.length; k++) {
-                    if($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && $scope.allItems[j]._info.visaValidation.validation[k].valid.get()) {
+                    if($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && $scope.allItems[j]._info.visaValidation.validation[k].valid.get() == 1) {
                         
                         nbrValid++;
 
-                    } else if ($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && !$scope.allItems[j]._info.visaValidation.validation[k].valid.get()) {
+                    } else if ($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && $scope.allItems[j]._info.visaValidation.validation[k].valid.get() == 0) {
                         
                         nbrInvalid++;
 
@@ -755,6 +755,7 @@
 
     }
 
+    
 
     /****
      * 
@@ -769,26 +770,34 @@
 
         detail['days'] = jourRestant;
 
-        if(jourRestant <= 0 && percentValid != 100){
+
+        /** Si Une Case Invalide : condition à changer */
+        if(visaManagerService.caseInvalid(item)) {
             detail["icon"] = "fa fa-times";
             detail["color"] = "red";
-        }else if(jourRestant <= 3 && jourRestant >= 1 && percentValid != 100) {
+            detail["message"] = "fichier non valide";
 
-            detail["icon"] = "fa fa-exclamation";
-            detail["color"] = "red";
-
-        } else if(jourRestant > 3 && jourRestant <= 7 && percentValid != 100) {
+        } else if(jourRestant <= 5 && jourRestant >= 0 && percentValid != 100) { /** Si jouRestant moins de 5jours */
 
             detail["icon"] = "fa fa-exclamation-triangle";
             detail["color"] = "orange";
+            detail["message"] = "vous avez " + jourRestant  + " jour(s) pour valider ce fichier";
 
-        } else if(jourRestant > 7 && percentValid != 100) {
+        } else if(jourRestant < 0 && percentValid != 100) { /** Si date limite depassée */
+
+            detail["icon"] = "fa fa-exclamation";
+            detail["color"] = "red";
+            detail["message"] = "delai depassé";
+
+        } else if(jourRestant > 5 && percentValid != 100) { /*** Si jourRestant superieur à 6 jours  */
             detail["icon"] = "fa fa-asterisk";
-            detail["color"] = "green";
-        } 
-        else if(percentValid == 100){
+            detail["color"] = "blue";
+            detail["message"] = "vous avez " + jourRestant  + " jour(s) pour valider ce fichier";
+
+        }  else if(percentValid == 100){
             detail["icon"] = "fa fa-check";
             detail["color"] = "green";
+            detail["message"] = "fichier validé";
         }
 
         return detail;
@@ -924,38 +933,91 @@
     }
 
 
-
     /****
      * Classer par validation
      */
-    $scope.orderByValidation = (iSelect) => {
-        var itemFilter = $filter('itemFilter');
+    // $scope.orderByValidation = (iSelect) => {
+    //     var itemFilter = $filter('itemFilter');
 
-        switch (iSelect) {
-            case "all":
-                $scope.allItems = itemFilter()
-                break;
+    //     switch (iSelect) {
+    //         case "all":
+    //             $scope.allItems = itemFilter()
+    //             break;
 
-            case "times":
-                break;
+    //         case "times":
+    //             break;
             
-            case "exclamation":
-                break;
+    //         case "exclamation":
+    //             break;
 
-            case "valid":
-                break;
+    //         case "valid":
+    //             break;
 
-            case "warning":
-                break;
+    //         case "warning":
+    //             break;
                 
+    //     }
+    // }
+
+    /****
+     * Recuperer le choix de l'utilisateur et retourner le filter et l'icon
+     */
+    $scope.getFilterIcon = (value) => {
+        var obj = {name : "" , color : ""};
+        $scope.filterData = value;
+
+        if(value == "all") {
+            obj.name = "cube";
+            obj.color = "blue";
+
+        } else if (value == "warning") {
+            obj.name = "exclamation-triangle";
+            obj.color = "orange";
+
+        } else if (value == "times") {
+            obj.name = "times";
+            obj.color = "red";
+
+        } else if (value == "valid") {
+            obj.name = "check";
+            obj.color = "green";
+
+        } else if (value == "cool") {
+            obj.name = "asterisk";
+            obj.color = "blue";
         }
+
     }
+
+
+    /****
+     * Recuperer la couleur et l'icon dan le tableau
+     */
+    $scope.getValidationIcon = (item) => {
+        var i = item.valid.get();
+
+        var obj = {}
+        if(i == 1) {
+            obj["name"] = "check-square";
+            obj["color"] = "green";
+        } else if(i == 0) {
+            obj["name"] = "times-circle";
+            obj["color"] = "red";
+        } else if(i == -1) {
+            obj["name"] = "asterisk";
+            obj["color"] = "blue";
+        }
+
+        return obj;
+    }
+
+
 
     /****
      * Trier par validation
      */
     $scope.sortByValidation = () => {
-        
+        console.log('yes');
     }
 
     }])

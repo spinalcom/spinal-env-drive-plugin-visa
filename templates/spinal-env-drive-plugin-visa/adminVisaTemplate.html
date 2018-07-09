@@ -119,9 +119,9 @@
                 <thead>
                     <tr>
                         <th style="text-align : center" title="filtrer par validation">
-                            <md-input-container class="md-block" flex-gt-sm>
-                                <md-select ng-model="filterData">
-                                    <md-option selected value="all">All</md-option>
+                            <!-- <md-input-container class="md-block" flex-gt-sm>
+                                <md-select aria-label="filterData" ng-model="filterData">
+                                    <md-option  selected value="all">All</md-option>
 
                                     <md-option value="times">
                                         <i style="color: red" class="fa fa-times"></i>
@@ -136,27 +136,85 @@
                                     </md-option>
 
                                     <md-option value="cool">
-                                        <i style="color: green" class="fa fa-asterisk"></i>
+                                        <i style="color: blue" class="fa fa-asterisk"></i>
                                     </md-option>
                                     
                                     <md-option value="warning">
                                         <i style="color: orange" class="fa fa-exclamation-triangle"></i>
                                     </md-option>
 
-
                                 </md-select>
-                            </md-input-container>
+                            </md-input-container> -->
+
+                            <md-menu>
+                                <md-button class="md-icon-button" aria-label="choose item" ng-click="$mdOpenMenu()" style="text-align: left">
+                                    <i ng-style="{color : getFilterIcon(filterData)['color']}" class="fa fa-{{getFilterIcon(filterData)['name']}}"></i>
+                                </md-button>
+
+                                <md-menu-content>
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('all')">
+                                            <i style="color: white" class="fa fa-cube"></i>
+                                            &nbsp;
+                                            Tous les items
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('warning')">
+                                            <i style="color: orange" class="fa fa-exclamation-triangle"></i>
+                                            &nbsp;
+                                            Prioritaire
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('times')">
+                                            <i style="color: red" class="fa fa-times"></i>
+                                            &nbsp;
+                                            Non Validé
+                                        </md-button>     
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('valid')">
+                                            <i style="color: green" class="fa fa-check"></i>
+                                            &nbsp;
+                                            Validé
+                                        </md-button>                                        
+                                    </md-menu-item>
+    
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('cool')">
+                                            <i style="color: blue" class="fa fa-asterisk"></i>
+                                            &nbsp;
+                                            Encours de validation
+                                        </md-button>                                        
+                                    </md-menu-item>
+        
+                                    <md-menu-item>
+                                        <md-button ng-click="getFilterIcon('exclamation')">
+                                            <i style="color: red" class="fa fa-exclamation"></i>
+                                            &nbsp;
+                                            Date limite depassée
+                                        </md-button>    
+                                    </md-menu-item>
+            
+                                                            
+
+                                </md-menu-content>
+
+                            </md-menu>
+
                         </th>
                         <th class="tableTd"  title="Nom">Nom</th>
                         <th class="tableTd"  title="Chemin">Lien</th>
                         <th class="tableTd"  title="Description">Description</th>
 
-
                         <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" ng-click="sortByValidation()">
                             {{case.name.get() | uppercase}}
                             <i class="fa fa-sort"></i>
                         </th>
-
 
                         <th class="tableTd"  title="Date de creation">Date de Creation</th>
                         <th class="tableTd"  title="Date limite de validation">Date Limite</th>
@@ -167,30 +225,66 @@
 
                 <tbody>
                     <tr ng-repeat="item in allItems | searchFilter:searchText | displayFilter:itemValid | itemFilter:filterData  track by $index">
-                        <td style="text-align : center" title="You have {{getDateInfo(item)['days']}} day(s) left to validate">
-                                <i ng-style="{'color' : getDateInfo(item)['color']}" class="{{getDateInfo(item)['icon']}}"></i>
+                        <td style="text-align : center" title="{{getDateInfo(item)['message']}} ">
+                            <i ng-style="{'color' : getDateInfo(item)['color']}" class="{{getDateInfo(item)['icon']}}"></i>
                         </td>
 
                         <td title="{{item.name.get()}}" class="tableTd">{{item.name.get()}}</td>
                         <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
                         <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td>
+
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <!-- <md-checkbox  aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
                             <!-- <md-checkbox aria-label="checkbox" ng-if="canBeDisplay(j)" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
                             <!-- {{canBeDisplay(j)}} -->
 
-                            <md-input-container ng-if="canBeDisplay(j)">
+                            <!-- <md-input-container ng-if="canBeDisplay(j)">
                                 <md-select aria-label="checkbox" style="text-align: center" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-change="checkCase(j._server_id,item._info.visaValidation,checkbox)">
-                                  <md-option ng-selected="!j.valid.get()" value="{{false}}">
+                                 
+                                  <md-option ng-selected="j.valid.get() == -1" value="{{-1}}">
+                                        <i style="color: blue" class="fa fa-asterisk"></i>
+                                  </md-option>
+                                    
+                                  <md-option ng-selected="j.valid.get() == 0" value="{{0}}">
                                     <i style="color: red" class="fa fa-times-circle"></i>
                                   </md-option>
 
-                                  <md-option ng-selected="j.valid.get()"  value="{{true}}">
+                                  <md-option ng-selected="j.valid.get() == 1"  value="{{1}}">
                                     <i style="color: green" class="fa fa-check-square"></i>
                                   </md-option>
 
                                 </md-select>
-                            </md-input-container>
+                            </md-input-container> -->
+
+                            <md-menu>
+                                <md-button class="md-icon-button" aria-label="choose item" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-click="$mdOpenMenu()" style="text-align: left">
+                                    <i ng-style="{color : getValidationIcon(j)['color']}" class="fa fa-{{getValidationIcon(j)['name']}}"></i>
+                                </md-button>
+
+                                <md-menu-content>
+                                    <md-menu-item>
+                                        <md-button ng-click="checkCase(j._server_id,item._info.visaValidation,-1)">
+                                            <i style="color: blue" class="fa fa-asterisk"></i>
+                                            None
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="checkCase(j._server_id,item._info.visaValidation,0)">
+                                            <i style="color: red" class="fa fa-times-circle"></i>
+                                            Ne pas Valider
+                                        </md-button>
+                                    </md-menu-item>
+
+                                    <md-menu-item>
+                                        <md-button ng-click="checkCase(j._server_id,item._info.visaValidation,1)">
+                                            <i style="color: green" class="fa fa-check-square"></i>
+                                            Valider
+                                        </md-button>
+                                    </md-menu-item>
+                                </md-menu-content>
+
+                            </md-menu>
 
 
                         </td>

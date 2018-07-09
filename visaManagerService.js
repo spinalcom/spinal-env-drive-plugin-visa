@@ -466,6 +466,18 @@
                 }
             }
         }
+
+        /****
+        * Verifier si un fichier a une case Invalid
+        */
+        factory.caseInvalid = (item) => {
+            for (var i = 0; i < item._info.visaValidation.validation.length; i++) {
+                if(item._info.visaValidation.validation[i].valid.get() == 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
         
         return factory;
 
