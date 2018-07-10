@@ -57,8 +57,9 @@
         border-right: 1px solid #ddd;
     }
 
-    md-checkbox[disabled] > div {
-        background-color: rgb(143, 35, 35);
+    .md-button.md-altTheme-theme[disabled] > i {
+        /* background-color: rgb(143, 35, 35); */
+        color: gray !important;
     }
 
 </style>
@@ -211,9 +212,9 @@
                         <th class="tableTd"  title="Chemin">Lien</th>
                         <th class="tableTd"  title="Description">Description</th>
 
-                        <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" ng-click="sortByValidation()">
+                        <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" id="0" > <!-- ng-click="sortByValidation($event,case)" -->
                             {{case.name.get() | uppercase}}
-                            <i class="fa fa-sort"></i>
+                            <!-- <i class="fa fa-sort"></i> -->
                         </th>
 
                         <th class="tableTd"  title="Date de creation">Date de Creation</th>

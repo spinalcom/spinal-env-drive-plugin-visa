@@ -1,4 +1,11 @@
 
+
+/***
+ * 
+ * Filtrer les fichiers par validation 
+ * 
+ */
+
 angular.module('app.spinal-panel').filter('displayFilter',function() {
     return function(items,displayValue) {
         var displayed = [];

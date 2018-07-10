@@ -50,7 +50,7 @@
                 factory.allVisa = new Directory();
                 let _visa = new Directory();
 
-                data.add_file("__visa__",_visa,{model_type : "Directory"});
+                data.add_file("__visa__",_visa,{model_type : "Directory", admin : true});
                 factory.loadPage.set(!factory.loadPage.get());
 
                 initQ.resolve(factory.allVisa);

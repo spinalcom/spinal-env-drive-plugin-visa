@@ -45,7 +45,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
 
         /* Si le fichier est déjà en cours de validation afficher une alert  */
-        if(FileSystem._objects[obj.file._server_id]._info.visaValidation) {
+        if(FileSystem._objects[obj.file._server_id]._info.visaValidation || FileSystem._objects[obj.file._server_id]._info.admin) {
             $mdDialog.show(
                 $mdDialog.alert()
                 .parent(angular.element(document.body))

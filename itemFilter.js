@@ -25,7 +25,7 @@ angular.module('app.spinal-panel').filter('itemFilter',["visaManagerService",fun
                 displayed.push(item);
             } else if(displayValue == "warning" && jourRestant <= 5 && jourRestant >= 0 && percentValid != 100 && !visaManagerService.caseInvalid(item)) { /*** inferieur à 5 jours */
                 displayed.push(item);
-            } else if(displayValue == "cool" && jourRestant > 7 && percentValid != 100 && !visaManagerService.caseInvalid(item)) { /*** Superieur à une semaine */
+            } else if(displayValue == "cool" && jourRestant > 5 && percentValid != 100 && !visaManagerService.caseInvalid(item)) { /*** Superieur à une semaine */
                 displayed.push(item);
             }       
         });

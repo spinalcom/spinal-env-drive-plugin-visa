@@ -56,7 +56,7 @@ require('./itemFilter');
           load_template(toload[i].uri, toload[i].name);
         }
 
-        var plateform = /drive/.exec(window.location.pathname);
+        // var plateform = /drive/.exec(window.location.pathname);
 
 
         // if(plateform) {
@@ -95,9 +95,9 @@ require('./itemFilter');
           });
         // }
 
-        if(plateform) {
+        // if(plateform) {
           spinalDrive_Env.add_applications('FileExplorer', new SpinalDrive_App_FileExplorer_visa());
-        }
+        // }
 
         
 

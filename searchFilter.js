@@ -1,4 +1,9 @@
 
+/****
+ * 
+ * Filtrer les items en faisant une recherche dans le champs de recherche
+ * 
+ */
 
 angular.module('app.spinal-panel').filter('searchFilter',function() {
 

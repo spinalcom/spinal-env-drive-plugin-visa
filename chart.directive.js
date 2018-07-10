@@ -1,3 +1,8 @@
+
+/****
+ * directive pour les graph
+ */
+
 angular.module('app.spinal-panel').directive("chartDirective",function(){
     return {
         restrict : "A",

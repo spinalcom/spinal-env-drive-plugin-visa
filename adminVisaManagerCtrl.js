@@ -246,7 +246,7 @@
                     if(parent_list[i]._ptr.data.value == id) {
                         $scope.addPluginInfo(parent_list[i],result,id,() => {
                             parent_list[i].load((data) => {
-                                data.add_file(result,new Directory(),{model_type : "Directory"});
+                                data.add_file(result,new Directory(),{model_type : "Directory", admin : true});
                             })
                         })
                     } 
@@ -493,7 +493,7 @@
                  * recuperer les infos de l'utilisateur selectionné
                  */
                 $scope.createFilterFor = query => {
-                    var lowercaseQuery = angular.lowercase(query);
+                    var lowercaseQuery = query.toLowerCase();
 
                     return function filterFn(user) {
                     return (
@@ -682,7 +682,7 @@
                         
                         nbrValid++;
 
-                    } else if ($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && $scope.allItems[j]._info.visaValidation.validation[k].valid.get() == 0) {
+                    } else if ($scope.allItems[j]._info.visaValidation.validation[k].id.get() == id && ($scope.allItems[j]._info.visaValidation.validation[k].valid.get() == 0 || $scope.allItems[j]._info.visaValidation.validation[k].valid.get() == -1)) {
                         
                         nbrInvalid++;
 
@@ -963,12 +963,13 @@
      * Recuperer le choix de l'utilisateur et retourner le filter et l'icon
      */
     $scope.getFilterIcon = (value) => {
+
         var obj = {name : "" , color : ""};
         $scope.filterData = value;
 
         if(value == "all") {
             obj.name = "cube";
-            obj.color = "blue";
+            obj.color = "white";
 
         } else if (value == "warning") {
             obj.name = "exclamation-triangle";
@@ -985,7 +986,13 @@
         } else if (value == "cool") {
             obj.name = "asterisk";
             obj.color = "blue";
+
+        } else if(value == "exclamation") {
+            obj.name = "exclamation";
+            obj.color = "red";
         }
+
+        return obj;
 
     }
 
@@ -1016,8 +1023,9 @@
     /****
      * Trier par validation
      */
-    $scope.sortByValidation = () => {
-        console.log('yes');
+    $scope.sortByValidation = (evt,myCase) => {
+        $scope.sortNumber = (parseInt(evt.currentTarget.id) + 1) % 3;
+        $scope.sortCaseId = myCase.id.get();
     }
 
     }])

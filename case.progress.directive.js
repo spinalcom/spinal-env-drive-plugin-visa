@@ -1,4 +1,8 @@
 
+/****
+ * Directive pour calculer le pourcentage de progression
+ */
+
 angular.module('app.spinal-panel').directive("caseProgressDirective",function(){
 
     return {

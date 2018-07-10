@@ -1,4 +1,8 @@
 
+/***
+ * Directive pour scroller la div message
+ */
+
 angular.module('app.spinal-panel').directive("scrollBottom",function(){
     return {
         restrict : "A",
