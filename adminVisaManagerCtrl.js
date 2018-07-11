@@ -909,7 +909,56 @@
      * Envoyer fichier à l'utilisateur une fois validé
      */
     $scope.sendItem = (item,evt) => {
-        console.log("send item",item);
+        
+        for (var i = 0; i < item._info.visaValidation.validation.length; i++) {
+            if(item._info.visaValidation.validation[i].valid.get() == -1) {
+
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .parent(angular.element(document.body))
+                    .clickOutsideToClose(true)
+                    .title('Erreur')
+                    .textContent('Verifiez que toutes les cases ont été cochées et réessayez !')
+                    .ariaLabel('Alert')
+                    .ok('OK')
+                    .targetEvent(evt)
+                );
+
+                return
+            }
+        }
+
+        item._info.add_attr({
+            stateVisaValidation : new Lst()
+        })
+
+        item._info.visaValidation.add_attr({
+            send_date : Date.now()
+        })
+
+        item._info.stateVisaValidation.push(item._info.visaValidation);
+
+        
+        item._info.rem_attr("visaValidation");
+
+
+        visaManagerService.deleteItemInVisa(item)
+        
+
+
+
+        $mdDialog.show(
+            $mdDialog.alert()
+            .parent(angular.element(document.body))
+            .clickOutsideToClose(true)
+            .title('Erreur')
+            .textContent('Item Envoyé avec succès !')
+            .ariaLabel('Alert')
+            .ok('OK')
+            .targetEvent(evt)
+        );
+
+
     }
 
 

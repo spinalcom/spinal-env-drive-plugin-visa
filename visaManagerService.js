@@ -467,6 +467,7 @@
             }
         }
 
+
         /****
         * Verifier si un fichier a une case Invalid
         */
@@ -479,6 +480,49 @@
             return false;
         }
         
+
+        factory.getItem = (item,itemList,cpt,paths) => {
+
+            if(cpt + 1 < paths.length) {
+
+                for (var i = 0; i < itemList.length; i++) {
+                    if(itemList[i].name.get() == paths[cpt]) {
+                        itemList[i].load((data) => {
+                            factory.getItem(item,data,cpt + 1, paths);
+                        })
+                        break;
+                    }
+                }
+
+            } else {
+
+                console.log("itemList",itemList);
+
+                for (var i = 0; i < itemList.length; i++) {
+                    if(itemList[i]._server_id == item._server_id) {
+                        itemList.splice(i,1);
+                        break;
+                    }
+                }
+
+            }
+
+        }
+
+
+        factory.deleteItemInVisa = (item) => {
+            
+            var paths = item._info.visaValidation.path.get().split("/");
+
+            var cpt = 1;
+
+            console.log("paths",paths);
+
+            factory.getItem(item,factory.allVisa,cpt,paths);
+
+        }
+
+
         return factory;
 
     }])

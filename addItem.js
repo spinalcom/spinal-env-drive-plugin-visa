@@ -66,10 +66,28 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
             controller : ["$scope","$mdDialog","visaManagerService","$compile","$rootScope",($scope,$mdDialog,visaManagerService,$compile,$rootScope) => {
 
+                $scope.pageNumber = 0;
+
                 visaManagerService.init()
                 .then((data) => {
                     $scope.allVisa = data;
                 })
+
+
+                $scope.caseToCheck = [];
+
+                visaManagerService.getAllCase().then((el) => {
+                    var myCases = el._info.listCaseValidation.get();
+
+                    for (var i = 0; i < myCases.length; i++) {
+                        myCases[i]["checked"] = true;
+                        $scope.caseToCheck.push(myCases[i]);
+                    }
+
+                },() => {
+                    console.log("error")
+                })
+
 
                 $scope.message = "";
                 $scope.visa = -1;
@@ -85,6 +103,11 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                     t.getDate() + 1,
 
                 )
+
+                $scope.goBack = () => {
+                    $scope.pageNumber = 0;
+                    $scope.formValid = false;
+                }
                 
 
                 $scope.subVisaChanged = function(value,order) {
@@ -166,28 +189,31 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
                 }
 
-                $scope.answer = function() {
-
-                    
+                $scope.goToPage1 = function() {
 
                     if($scope.message.trim().length == 0) {
                         $scope.message = "-";
                     } else {
                         $scope.message = $scope.message.trim();
                     }
+                    // $mdDialog.hide(result);
+                    $scope.pageNumber = 1;
+                }
 
-                    var result = {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id, validateBefore : new Date($scope.dateToValid).getTime()}
+                $scope.answer = () => {
+                    var result = {data : {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id, validateBefore : new Date($scope.dateToValid).getTime()}}
                     
-                    result["path"] = "/" + FileSystem._objects[$scope.visaSelected].name.get();
+                    result.data["path"] = "/" + FileSystem._objects[$scope.visa].name.get();
 
                     for (var i = 0; i < $scope.nbrSelect; i++) {
-                        result["path"] += "/" + FileSystem._objects[eval(`$scope.x_${i}`)].name.get()
+                        result.data["path"] += "/" + FileSystem._objects[eval(`$scope.x_${i}`)].name.get();
                     }
                     
-                    result.path += "/" + obj.file.name;
+                    result.data.path += "/" + obj.file.name;
+
+                    result["caseToCheck"] = $scope.caseToCheck;
 
                     $mdDialog.hide(result);
-
                 }
 
 
@@ -196,6 +222,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
             parent : angular.element(document.body),
             targetEvent : obj.evt,
             clickOutsideToClose : false
+    /*
         }).then((result) => {
 
             $mdDialog.show({
@@ -231,6 +258,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 parent : angular.element(document.body),
                 targetEvent : obj.evt,
                 clickOutsideToClose : false
+    */
             }).then((result) => {
 
                 var it = FileSystem._objects[result.data.itemId];
@@ -252,9 +280,9 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
             visaManagerService.addItemToValidate(result,result.path);
             */
 
-        },() => {
-            console.log("error");
-        })
+        // },() => {
+        //     console.log("error");
+        // })
         
         
         
