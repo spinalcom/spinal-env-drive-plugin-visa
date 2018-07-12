@@ -406,6 +406,7 @@
 
         }
 
+
         /****
          * 
          * Verifier si un utilisateur peut cocher une case
@@ -481,14 +482,14 @@
         }
         
 
-        factory.getItem = (item,itemList,cpt,paths) => {
+        factory.getItem = (item,itemList,cpt,paths,callback) => {
 
             if(cpt + 1 < paths.length) {
 
                 for (var i = 0; i < itemList.length; i++) {
                     if(itemList[i].name.get() == paths[cpt]) {
                         itemList[i].load((data) => {
-                            factory.getItem(item,data,cpt + 1, paths);
+                            factory.getItem(item,data,cpt + 1, paths,callback);
                         })
                         break;
                     }
@@ -496,29 +497,47 @@
 
             } else {
 
-                console.log("itemList",itemList);
-
                 for (var i = 0; i < itemList.length; i++) {
                     if(itemList[i]._server_id == item._server_id) {
+
+                        if(!itemList[i]._info.stateVisaValidation) {
+                            itemList[i]._info.add_attr({
+                                stateVisaValidation : new Lst()
+                            })
+                        }
+                
+                        
+                        itemList[i]._info.visaValidation.add_attr({
+                            send_date : Date.now()
+                        })
+                
+                        itemList[i]._info.stateVisaValidation.push(itemList[i]._info.visaValidation);
+
                         itemList.splice(i,1);
+
+                        callback(item);
                         break;
                     }
                 }
+
 
             }
 
         }
 
 
-        factory.deleteItemInVisa = (item) => {
+        /****
+         * 
+         * Supprimer un fichier
+         */
+
+        factory.deleteItemInVisa = (item,callback) => {
             
             var paths = item._info.visaValidation.path.get().split("/");
 
             var cpt = 1;
 
-            console.log("paths",paths);
-
-            factory.getItem(item,factory.allVisa,cpt,paths);
+            factory.getItem(item,factory.allVisa,cpt,paths,callback);
 
         }
 

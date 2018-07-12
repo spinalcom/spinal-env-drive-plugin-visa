@@ -37,15 +37,50 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
     * La fonction action est exécutée quand on click sur le button < Add to visa validation >
     */
 
+
    action(obj) {
+
+        var items = obj.scope.directory.filter(el => el.selected == true);
+
         let _self = this;
         let $mdDialog =  obj.scope.injector.get('$mdDialog');
         let $templateCache = obj.scope.injector.get('$templateCache');
         let visaManagerService = obj.scope.injector.get('visaManagerService');
 
 
-        /* Si le fichier est déjà en cours de validation afficher une alert  */
-        if(FileSystem._objects[obj.file._server_id]._info.visaValidation || FileSystem._objects[obj.file._server_id]._info.admin) {
+        // /* Si le fichier est déjà en cours de validation afficher une alert  */
+        // if(FileSystem._objects[obj.file._server_id]._info.visaValidation || FileSystem._objects[obj.file._server_id]._info.admin) {
+        //     $mdDialog.show(
+        //         $mdDialog.alert()
+        //         .parent(angular.element(document.body))
+        //         .clickOutsideToClose(true)
+        //         .title('Sorry')
+        //         .textContent('Sorry this file has already been sent for validation !!!')
+        //         .ariaLabel('Alert')
+        //         .ok('OK')
+        //         .targetEvent(obj.evt)
+        //     );
+
+        //     return;
+        // }
+
+
+
+        for (var i = 0; i < items.length; i++) {
+
+            console.log(items);
+
+
+
+            /* Si le fichier est déjà en cours de validation afficher une alert  */
+            if(FileSystem._objects[items[i]._server_id]._info.visaValidation || FileSystem._objects[items[i]._server_id]._info.admin) {
+                items.splice(i,1);
+                i--;
+            }
+
+        }
+
+        if(items.length == 0) {
             $mdDialog.show(
                 $mdDialog.alert()
                 .parent(angular.element(document.body))
@@ -172,7 +207,8 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.selectedChange = (visaSelected) => {
                     var parent = document.getElementsByClassName("displaySelect")[0];
                     parent.innerHTML = "";
-                    $scope.visa = visaSelected;
+                    $scope.visaS = visaSelected;
+                    $scope.visa = null;
                     $scope.nbrSelect = 0;
 
                     var content = angular.element(parent);
@@ -183,8 +219,11 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 }
 
 
-                $scope.cancel = function() {
+                $scope.dataChanged = () => {
                     console.log($scope.dateToValid);
+                }
+
+                $scope.cancel = function() {
                     $mdDialog.cancel();
 
                 }
@@ -201,15 +240,15 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 }
 
                 $scope.answer = () => {
-                    var result = {data : {stateId : $scope.visa, message : $scope.message, itemId : obj.file._server_id, validateBefore : new Date($scope.dateToValid).getTime()}}
+                    var result = {data : {stateId : $scope.visa != null ? $scope.visa : $scope.visaS, message : $scope.message, itemId : items, validateBefore : new Date($scope.dateToValid).getTime()}}
                     
-                    result.data["path"] = "/" + FileSystem._objects[$scope.visa].name.get();
+                    result.data["path"] = "/" + FileSystem._objects[$scope.visaS].name.get();
 
                     for (var i = 0; i < $scope.nbrSelect; i++) {
                         result.data["path"] += "/" + FileSystem._objects[eval(`$scope.x_${i}`)].name.get();
                     }
                     
-                    result.data.path += "/" + obj.file.name;
+                    result.data.path += "/";
 
                     result["caseToCheck"] = $scope.caseToCheck;
 
@@ -261,15 +300,32 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
     */
             }).then((result) => {
 
-                var it = FileSystem._objects[result.data.itemId];
+                
+
+                for (var i = 0; i < result.data.itemId.length; i++) {
+                    
+                    var copyObject = {
+                        stateId : result.data.stateId, 
+                        message : result.data.message, 
+                        itemId : result.data.itemId[i]._server_id, 
+                        validateBefore : result.data.validateBefore,
+                        caseToCheck : result.caseToCheck
+                    }
+
+                    var it = FileSystem._objects[copyObject.itemId];
+
+                    copyObject["path"] = result.data.path + it.name.get();
                
-                if(it._info.model_type.get().toLowerCase() == "directory") {
-                    console.log("directory")
-                    visaManagerService.addFolderToValidate(result.data,result.data.path,result.caseToCheck);
-                } else {
-                    console.log("item")
-                    visaManagerService.addItemToValidate(result.data,result.data.path,result.caseToCheck);
+                    if(it._info.model_type.get().toLowerCase() == "directory") {
+                        console.log("directory")
+                        visaManagerService.addFolderToValidate(copyObject,copyObject.path,copyObject.caseToCheck);
+                    } else {
+                        console.log("item")
+                        visaManagerService.addItemToValidate(copyObject,copyObject.path,copyObject.caseToCheck);
+                    }
+
                 }
+                
 
             },() => {
                 console.log("canceled")

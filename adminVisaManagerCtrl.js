@@ -928,35 +928,27 @@
             }
         }
 
-        item._info.add_attr({
-            stateVisaValidation : new Lst()
-        })
+        // visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
+        // visaManagerService.deleteItemInVisa(item);
+        
+        visaManagerService.deleteItemInVisa(item,(item) => {
 
-        item._info.visaValidation.add_attr({
-            send_date : Date.now()
-        })
-
-        item._info.stateVisaValidation.push(item._info.visaValidation);
+            $mdDialog.show(
+                $mdDialog.alert()
+                .parent(angular.element(document.body))
+                .clickOutsideToClose(true)
+                .title('Erreur')
+                .textContent('Item Envoyé avec succès !')
+                .ariaLabel('Alert')
+                .ok('OK')
+                .targetEvent(evt)
+            ).then(() => {
+                // item._info.rem_attr("visaValidation");
+                visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
+            })
+        });
 
         
-        item._info.rem_attr("visaValidation");
-
-
-        visaManagerService.deleteItemInVisa(item)
-        
-
-
-
-        $mdDialog.show(
-            $mdDialog.alert()
-            .parent(angular.element(document.body))
-            .clickOutsideToClose(true)
-            .title('Erreur')
-            .textContent('Item Envoyé avec succès !')
-            .ariaLabel('Alert')
-            .ok('OK')
-            .targetEvent(evt)
-        );
 
 
     }

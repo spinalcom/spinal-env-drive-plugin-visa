@@ -43,10 +43,10 @@
                     
                 </div>
     
-    
-                <md-input-container class="md-block datePicker">
+                <br />
+                <md-input-container class="datePicker md-block">
                     <label>Date Limite</label>
-                    <md-datepicker  md-open-on-focus md-hide-icons="all" md-min-date="minDate" ng-model="dateToValid"></md-datepicker>
+                    <md-datepicker  md-open-on-focus md-hide-icons="all" md-min-date="minDate" ng-model="dateToValid" ng-change="dataChanged()"></md-datepicker>
                 </md-input-container>
     
     
