@@ -219,8 +219,8 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 }
 
 
-                $scope.dataChanged = () => {
-                    console.log($scope.dateToValid);
+                $scope.dataChanged = (event) => {
+                    $scope.dateToValid = event.dateToValid;
                 }
 
                 $scope.cancel = function() {

@@ -29,33 +29,58 @@
 
 
             initQ = $q.defer()
-            ngSpinalCore.load_root()
-            .then((data) => {
+            // ngSpinalCore.load_root()
+            // .then((data) => {
                 
 
-                for (var i = 0; i < data.length; i++) {
-                    if(data[i].name.get() == "__visa__") {
-                        data[i].load((m) => {
-                            factory.allVisa = m;
-                            factory.loadPage.set(!factory.loadPage.get());
-                            initQ.resolve(factory.allVisa);
-                        })
+            //     for (var i = 0; i < data.length; i++) {
+            //         if(data[i].name.get() == "__visa__" && data[i]._info.isRoot) {
+            //             data[i].load((m) => {
+            //                 factory.allVisa = m;
+            //                 factory.loadPage.set(!factory.loadPage.get());
+            //                 initQ.resolve(factory.allVisa);
+            //             })
                         
-                        return;
+            //             return;
                         
-                    }
+            //         }
                     
-                }
+            //     }
 
-                factory.allVisa = new Directory();
-                let _visa = new Directory();
+            //     factory.allVisa = new Directory();
+            //     let _visa = new Directory();
 
-                data.add_file("__visa__",_visa,{model_type : "Directory", admin : true});
+            //     data.add_file("__visa__",_visa,{model_type : "Directory", admin : true, isRoot : true});
+            //     factory.loadPage.set(!factory.loadPage.get());
+
+            //     initQ.resolve(factory.allVisa);
+
+            // },() => { })
+
+            ngSpinalCore.load('__visa__')
+            .then((data) => {
+
+                console.log("dossier existe",data)
+
+                factory.allVisa = data;
                 factory.loadPage.set(!factory.loadPage.get());
-
                 initQ.resolve(factory.allVisa);
 
-            },() => { })
+                return;
+            },() => {
+
+                factory.allVisa = new Directory();
+
+                ngSpinalCore.load_root()
+                .then((data) => {
+                    data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true});
+                    factory.loadPage.set(!factory.loadPage.get());
+                    initQ.resolve(factory.allVisa);
+                },() => {})
+                
+                
+                
+            })
             
             return initQ.promise;
 

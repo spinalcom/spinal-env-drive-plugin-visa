@@ -22,7 +22,9 @@ angular.module('app.spinal-panel')
 
     factory.getItemId = (all_dir,item) => {
         var x = [];
+
         for (var i = 0; i < all_dir.length; i++) {
+
             if(all_dir[i].parent == item && all_dir[i].text != "__visa__") {
                 x.push(all_dir[i].id);
             }

@@ -930,23 +930,50 @@
 
         // visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
         // visaManagerService.deleteItemInVisa(item);
-        
-        visaManagerService.deleteItemInVisa(item,(item) => {
 
-            $mdDialog.show(
-                $mdDialog.alert()
-                .parent(angular.element(document.body))
-                .clickOutsideToClose(true)
-                .title('Erreur')
-                .textContent('Item Envoyé avec succès !')
-                .ariaLabel('Alert')
-                .ok('OK')
-                .targetEvent(evt)
-            ).then(() => {
-                // item._info.rem_attr("visaValidation");
-                visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
-            })
-        });
+        var confirm = $mdDialog.prompt()
+            .title('Message')
+            .textContent('Voulez-vous ajouter un commentaire ?')
+            .placeholder('Message')
+            .ariaLabel('message')
+            .initialValue('Aucun message')
+            .targetEvent(evt)
+            .required(false)
+            .ok('Envoyer')
+            .cancel('Annuler');
+
+        
+        $mdDialog.show(confirm).then(function (result) {
+
+            if(item._info.visaValidation.sendComment) {
+                item._info.visaValidation.sendComment.set(result);
+            } else {
+                item._info.visaValidation.add_attr({
+                    sendComment : result
+                })
+            }
+
+            visaManagerService.deleteItemInVisa(item,(item) => {
+
+                $mdDialog.show(
+                    $mdDialog.alert()
+                    .parent(angular.element(document.body))
+                    .clickOutsideToClose(true)
+                    .title('Erreur')
+                    .textContent('Item Envoyé avec succès !')
+                    .ariaLabel('Alert')
+                    .ok('OK')
+                    .targetEvent(evt)
+                ).then(() => {
+                    $scope.allItems = [];
+                    item._info.rem_attr("visaValidation");
+                    visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
+                })
+            });
+        },() => {})
+
+        
+        
 
         
 
