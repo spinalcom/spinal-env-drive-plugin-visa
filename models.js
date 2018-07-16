@@ -126,3 +126,46 @@ var MessageModel = class MessageModel extends Model {
     }
 }
 module.exports.MessageModel = MessageModel;
+
+
+
+/****
+ * 
+ * Tabs Model
+ * 
+ */
+var TabsModel = class TabsModel extends Model {
+
+    constructor(argTitle) {
+        super();
+        this.add_attr({
+            title : argTitle,
+            users : [{id : 168, name : "admin"}]
+        })
+    }
+
+}
+module.exports.TabsModel = TabsModel;
+
+
+/****
+ * Model Paramaters
+ */
+
+ var ParameterModel = class ParameterModel extends Model {
+
+    constructor() {
+        super();
+        this.add_attr({
+            listCaseValidation : new Lst(),
+            tabs : [
+                new TabsModel("file list"),
+                new TabsModel("folder organization"),
+                new TabsModel("validation item"),
+                new TabsModel("graph")
+            ]
+        })
+    }
+
+ }
+ module.exports.ParameterModel = ParameterModel;

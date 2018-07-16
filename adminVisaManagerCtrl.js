@@ -1,7 +1,7 @@
 (function(){
     angular.module('app.spinal-panel')
-    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","$rootScope","$compile","displayFolderService","spinalModelDictionary","authService","$filter",
-    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,$rootScope,$compile,displayFolderService,spinalModelDictionary,authService,$filter){
+    .controller('adminVisaManagerCtrl',['spinalFileSystem','$scope',"visaManagerService","$mdDialog","$templateCache","displayFolderService","spinalModelDictionary","authService","ngSpinalCore",
+    function(spinalFileSystem,$scope,visaManagerService,$mdDialog,$templateCache,displayFolderService,spinalModelDictionary,authService,ngSpinalCore){
 
     $scope.currentPage = 1;
 
@@ -176,7 +176,9 @@
     }
 
 
-    
+
+/*************************************************************************************************************************************************/
+
     /****
      * Supprimer un dossier
      * 
@@ -232,8 +234,33 @@
             var parent_id = spinalFileSystem.folderExplorer_dir[obj.node.original.parent].model;
 
         } else {
-            var parent_id = spinalFileSystem.folderExplorer_dir[displayFolderService.rootId].model;
+            var parent_id = displayFolderService.rootId;//spinalFileSystem.folderExplorer_dir[displayFolderService.rootId].model;
+
+            console
+
+            $mdDialog.show(confirm).then(function(result) {
+                // for (var i = 0; i < parent_list.length; i++) {
+                //     if(parent_list[i]._ptr.data.value == id) {
+                //         $scope.addPluginInfo(parent_list[i],result,id,() => {
+                //             parent_list[i].load((data) => {
+                //                 data.add_file(result,new Directory(),{model_type : "Directory", admin : true});
+                //             })
+                //         })
+                //     } 
+
+                // }
+
+                if(result && result.trim().length > 0)
+                    FileSystem._objects[parent_id].add_file(result,new Directory(),{model_type : "Directory", admin : true});
+
+
+
+            })
+
+            return;
+
         }
+        
         var id = obj.node.original.model;
 
         var parent_list = FileSystem._objects[parent_id];
@@ -242,15 +269,17 @@
 
         if(parent_list) {
             $mdDialog.show(confirm).then(function(result) {
-                for (var i = 0; i < parent_list.length; i++) {
-                    if(parent_list[i]._ptr.data.value == id) {
-                        $scope.addPluginInfo(parent_list[i],result,id,() => {
-                            parent_list[i].load((data) => {
-                                data.add_file(result,new Directory(),{model_type : "Directory", admin : true});
+                if(result && result.trim().length > 0){
+                    for (var i = 0; i < parent_list.length; i++) {
+                        if(parent_list[i]._ptr.data.value == id) {
+                            $scope.addPluginInfo(parent_list[i],result,id,() => {
+                                parent_list[i].load((data) => {
+                                    data.add_file(result,new Directory(),{model_type : "Directory", admin : true});
+                                })
                             })
-                        })
-                    } 
+                        } 
 
+                    }
                 }
             })    
 
@@ -384,10 +413,21 @@
      * 
      */
     let listener_destructor = spinalFileSystem.subcribe("SPINAL_FS_ONCHANGE",() => {
-        spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
-            $scope.fsdir = displayFolderService.getFolderJson(res.tree);
-            $scope.all_dir = displayFolderService.getTreeJson(res.all_dir);
-        });
+        // spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
+        //     $scope.fsdir = displayFolderService.getFolderJson(res.tree);
+        //     $scope.all_dir = displayFolderService.getTreeJson(res.all_dir);
+        // });
+
+        ngSpinalCore.load("__visa__").then((m) => {
+
+            spinalFileSystem.getFolderJson_rec($scope.all_dir,m).then((res) => {
+                $scope.fsdir = displayFolderService.formatFolderJson(res.tree);
+                $scope.all_dir = displayFolderService.formatFolderJson(res.all_dir);
+            })
+        },() => {})
+
+        
+
     });
 
 
@@ -405,25 +445,41 @@
     };
 
 
-    spinalFileSystem.init();
+    spinalFileSystem.init().then(() => {
+        
+        ngSpinalCore.load("__visa__").then((m) => {
 
+            spinalFileSystem.getFolderJson_rec($scope.all_dir,m).then((res) => {
 
-    /****
-     * 
-     * Recuperer le detail des dossiers en format JSON
-     * 
-     */
-    spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
+                var myTree = Object.assign(res.tree);
+                var myAll_dir = Object.assign(res.all_dir);
 
-        var myTree = res.tree.splice(0);
-        var myAll_dir = Object.assign(res.all_dir);
+                $scope.fsdir = displayFolderService.formatFolderJson(myTree);
+                $scope.all_dir = displayFolderService.formatFolderJson(myAll_dir);
 
-        $scope.fsdir = displayFolderService.getFolderJson(myTree);
-        $scope.all_dir = displayFolderService.getTreeJson(myAll_dir); //displayFolderService.getFolderJson(res.all_dir);  
-
+            })
+        },() => {})
     });
-    
 
+
+    // /****
+    //  * 
+    //  * Recuperer le detail des dossiers en format JSON
+    //  * 
+    //  */
+    // spinalFileSystem.getFolderJson($scope.all_dir).then(res => {
+
+    //     var myTree = res.tree.splice(0);
+    //     var myAll_dir = Object.assign(res.all_dir);
+
+    //     $scope.fsdir = displayFolderService.getFolderJson(myTree);
+    //     $scope.all_dir = displayFolderService.getTreeJson(myAll_dir); //displayFolderService.getFolderJson(res.all_dir);
+
+    // });
+
+    
+    
+/*************************************************************************************************************************************************/
 
     /****
      * 

@@ -9,6 +9,7 @@
         let user = authService.get_user();
         var initQ;
         var itemQ;
+        var tabsQ;
 
         factory.listPromise = [];
         factory.allCases;
@@ -60,8 +61,6 @@
             ngSpinalCore.load('__visa__')
             .then((data) => {
 
-                console.log("dossier existe",data)
-
                 factory.allVisa = data;
                 factory.loadPage.set(!factory.loadPage.get());
                 initQ.resolve(factory.allVisa);
@@ -73,7 +72,7 @@
 
                 ngSpinalCore.load_root()
                 .then((data) => {
-                    data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true});
+                    data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true,parameters : new ParameterModel()});
                     factory.loadPage.set(!factory.loadPage.get());
                     initQ.resolve(factory.allVisa);
                 },() => {})
@@ -240,9 +239,6 @@
          */
         factory.addItemToValidate = (data,path,caseToCheck) => {
 
-
-            console.log(data);
-
             let visaStateFolder = FileSystem._objects[data.stateId];
             let item = FileSystem._objects[data.itemId];
             let myList = [];
@@ -272,13 +268,14 @@
          * 
          */
         factory.ReturnlistCase = (data) => {
-            if(!data._info.listCaseValidation) {
-                data._info.add_attr({
+
+            if(!data._info.parameters.listCaseValidation) {
+                data._info.parameters.add_attr({
                     listCaseValidation : new Lst()
                 })
             }
-
-            return data._info.listCaseValidation;
+            
+            return data._info.parameters.listCaseValidation;
         }
 
 
@@ -288,6 +285,8 @@
          * 
          */
         factory.getAllCase = () => {
+
+
             if(itemQ) {
                 return itemQ.promise; 
             }
@@ -296,7 +295,8 @@
             .then((data) => {
                 for (var i = 0; i < data.length; i++) {
                     if(data[i].name.get() == "__visa__") {
-                        factory.allCases = factory.ReturnlistCase(data[i]);
+
+                        factory.allCases = data[i]._info.parameters.listCaseValidation ;//factory.ReturnlistCase(data[i]);
                         itemQ.resolve(data[i]);
                     }
                 }
@@ -332,6 +332,7 @@
                 caseValidation.users.set(result.users);
                 
                 factory.allCases.push(caseValidation);
+
                 callback("add",caseValidation);
             }
 
@@ -564,6 +565,29 @@
 
             factory.getItem(item,factory.allVisa,cpt,paths,callback);
 
+        }
+
+
+        /****
+         * 
+         * Recuperer les tabs
+         * 
+         */
+        factory.getTabs = () => {
+            if(tabsQ) {
+                return tabsQ.promise; 
+            }
+            tabsQ = $q.defer()
+            ngSpinalCore.load_root()
+            .then((data) => {
+                for (var i = 0; i < data.length; i++) {
+                    if(data[i].name.get() == "__visa__") {
+
+                        factory.allCases = data[i]._info.parameters.listCaseValidation ;//factory.ReturnlistCase(data[i]);
+                        tabsQ.resolve(data[i]);
+                    }
+                }
+            })
         }
 
 

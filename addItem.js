@@ -68,10 +68,6 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
         for (var i = 0; i < items.length; i++) {
 
-            console.log(items);
-
-
-
             /* Si le fichier est déjà en cours de validation afficher une alert  */
             if(FileSystem._objects[items[i]._server_id]._info.visaValidation || FileSystem._objects[items[i]._server_id]._info.admin) {
                 items.splice(i,1);
@@ -112,7 +108,12 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.caseToCheck = [];
 
                 visaManagerService.getAllCase().then((el) => {
-                    var myCases = el._info.listCaseValidation.get();
+
+                    console.log("element",el);
+
+                    var myCases = el._info.parameters.listCaseValidation.get();
+
+                    console.log("myCases",myCases);
 
                     for (var i = 0; i < myCases.length; i++) {
                         myCases[i]["checked"] = true;
