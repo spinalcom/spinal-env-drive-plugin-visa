@@ -13,8 +13,18 @@
 
         factory.listPromise = [];
         factory.allCases;
-        factory.loadPage = new Bool(true);
+        
+        ngSpinalCore.load_root()
+                .then((data) => {
+                    for (var i = 0; i < data.length; i++) {
+                        if(data[i].name == "__visa__") {
+                            factory.loadPage = data[i]._info.load_page;
+                        }
+                    }
+                },() => {})
 
+
+        factory.allTabs;
 
         /**
          * 
@@ -72,9 +82,13 @@
 
                 ngSpinalCore.load_root()
                 .then((data) => {
-                    data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true,parameters : new ParameterModel()});
+                    
+                    factory.loadPage = new Bool(true);
+                    data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true, load_page : factory.loadPage,parameters : new ParameterModel()});
                     factory.loadPage.set(!factory.loadPage.get());
                     initQ.resolve(factory.allVisa);
+
+                    
                 },() => {})
                 
                 
@@ -583,13 +597,14 @@
                 for (var i = 0; i < data.length; i++) {
                     if(data[i].name.get() == "__visa__") {
 
-                        factory.allCases = data[i]._info.parameters.listCaseValidation ;//factory.ReturnlistCase(data[i]);
+                        factory.allTabs = data[i]._info.parameters.tabs ;//factory.ReturnlistCase(data[i]);
                         tabsQ.resolve(data[i]);
                     }
                 }
             })
         }
 
+        factory.getTabs();
 
         return factory;
 

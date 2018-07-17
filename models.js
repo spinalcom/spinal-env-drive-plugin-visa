@@ -1,5 +1,17 @@
 
 
+var newGuid = () => {
+    var d = new Date().getTime();
+    var guid = 'xxxx-xxxx-xxxx-xxxx-xxxx'.replace(/[xy]/g, function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+    });
+    return guid;
+};
+
+
+
 /****
  * 
  * Model d'une case à cocher (ajouter à un fichier)
@@ -136,11 +148,13 @@ module.exports.MessageModel = MessageModel;
  */
 var TabsModel = class TabsModel extends Model {
 
-    constructor(argTitle) {
+    constructor(argTitle,argAll) {
         super();
         this.add_attr({
+            id : newGuid(),
             title : argTitle,
-            users : [{id : 168, name : "admin"}]
+            users : [{id : 168, name : "admin"}],
+            all : argAll
         })
     }
 
@@ -159,10 +173,11 @@ module.exports.TabsModel = TabsModel;
         this.add_attr({
             listCaseValidation : new Lst(),
             tabs : [
-                new TabsModel("file list"),
-                new TabsModel("folder organization"),
-                new TabsModel("validation item"),
-                new TabsModel("graph")
+                new TabsModel("file list",true),
+                new TabsModel("folder organization",false),
+                new TabsModel("validation item",false),
+                new TabsModel("graph",true),
+                new TabsModel("Manager",false)
             ]
         })
     }

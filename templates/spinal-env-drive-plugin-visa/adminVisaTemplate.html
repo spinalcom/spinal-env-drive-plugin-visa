@@ -62,12 +62,21 @@
         color: gray !important;
     }
 
+
+    md-nav-bar.md-altTheme-theme .md-button._md-nav-button {
+        color: #ffffff !important;
+    }
+
+    md-nav-bar.md-altTheme-theme .md-button._md-nav-button[disabled] {
+        color: gray !important;
+    }
+
 </style>
 
 
-<md-content id="myContainer" class="myContainer md-padding">
+<md-content id="myContainer" class="myContainer md-padding" folder-drop folderdrop-events="dropFile">
     <md-nav-bar nav-bar-aria-label="navigation links">
-        <md-nav-item md-nav-click="goto(1)" name="page1">
+        <!-- <md-nav-item md-nav-click="goto(1)" name="page1">
             FileList
         </md-nav-item>
 
@@ -81,6 +90,10 @@
 
         <md-nav-item md-nav-click="goto(4)" name="page4">
             Graph
+        </md-nav-item> -->
+
+        <md-nav-item ng-repeat="tab in myAllTabs" ng-if="!DisableTab(tab)" md-nav-click="goto($index + 1)" name="page{{$index + 1}}">
+            {{tab.title.get()}}
         </md-nav-item>
 
     </md-nav-bar>

@@ -15,6 +15,7 @@
 
     let init = visaManagerService.init()
     let allCase = visaManagerService.getAllCase();
+    let allTabs = visaManagerService.getTabs();
 
 
     $scope.allItems = [];
@@ -40,10 +41,10 @@
      */
     init.then(() => {
         visaManagerService.loadPage.bind(() => {
-            $scope.allItems = [];
+            
             visaManagerService.getAllItemInvalidation()
             .then((el) => {
-
+                $scope.allItems = [];
                 Promise.all(el)
                 .then(function(values) {
                     for (var i = 0; i < values.length; i++) {
@@ -81,6 +82,13 @@
     })
 
 
+    allTabs.then(() => {
+        visaManagerService.loadPage.bind(() => {
+            $scope.myAllTabs = visaManagerService.allTabs;
+        })
+    })
+
+
     /****
      * 
      * Cocher une case
@@ -112,6 +120,7 @@
         }
 
         var pourcentage = Math.round((nombreSelect * 100 /listValidation.validation.length) * 100) / 100;
+
         
 
         listValidation.isValid.set(pourcentage);
@@ -456,6 +465,8 @@
 
                 $scope.fsdir = displayFolderService.formatFolderJson(myTree);
                 $scope.all_dir = displayFolderService.formatFolderJson(myAll_dir);
+
+                // visaManagerService.loadPage.set(!visaManagerService.loadPage.get());
 
             })
         },() => {})
@@ -1151,6 +1162,61 @@
         $scope.sortNumber = (parseInt(evt.currentTarget.id) + 1) % 3;
         $scope.sortCaseId = myCase.id.get();
     }
+
+
+    /****
+     * Retourne false si l'utilisateur a le droit de gerer un tab, retourne true sinon
+     */
+    $scope.DisableTab = (tab) => {
+
+        if(tab.all.get()) {
+            return false;
+        }
+
+        var currentUser = authService.get_user();
+
+        for (var i = 0; i < tab.users.length; i++) {
+            if(tab.users[i].name == currentUser.username) {
+                return false;
+            }
+        }
+
+        return true;
+
+    }
+
+
+
+    /****
+     * Drag and drop un fichier pour l'ajouter ou voir son detail
+     */
+    $scope.dropFile = {
+        "drop": (event) => {
+          event.stopPropagation();
+          event.preventDefault();
+          let selected = spinalFileSystem.FE_selected_drag;
+          if (selected) {
+            $scope.fs_path = Array.from(spinalFileSystem.FE_fspath_drag);
+            
+            console.log("selected",selected);
+
+            console.log("fs_path",$scope.fs_path);
+
+          }
+          return false;
+        },
+        "dragover": (event) => {
+          event.preventDefault();
+          return false;
+        },
+        "dragenter": (event) => {
+          event.preventDefault();
+          return false;
+        }
+
+    };
+
+
 
     }])
 })();
