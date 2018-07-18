@@ -28,6 +28,8 @@
     $scope.all_dir = {};
     $scope.selected_node = 0;
 
+    $scope.tabSelected;
+
 
     $scope.boxChanged = (val) => {
         $scope.boxValid = val.boxValid;
@@ -1216,6 +1218,47 @@
 
     };
 
+
+
+    $scope.configureTab = (tab) => {
+        $scope.tabSelected = tab;
+
+        spinalModelDictionary.init().then(() => {
+            $scope._allUsers = spinalModelDictionary.users.get();
+        })
+    }
+
+    $scope.userHasPermission = (user) => {
+
+        for (var i = 0; i < $scope.tabSelected.users.length; i++) {
+            if($scope.tabSelected.users[i].id == user.id) {
+                return true;
+            }
+        }
+
+        return false;
+
+    }
+
+    $scope.modifyUserPermission = (user) => {
+
+        if(user.name.toLowerCase() == "admin") {
+            return;
+        }
+            
+
+        for (var i = 0; i < $scope.tabSelected.users.length; i++) {
+            if($scope.tabSelected.users[i].id == user.id) {
+                console.log("user existe");
+                $scope.tabSelected.users.splice(i,1);
+                return;
+            }
+        }
+
+        console.log("user not exist");
+        $scope.tabSelected.users.push(user);
+
+    }
 
 
     }])

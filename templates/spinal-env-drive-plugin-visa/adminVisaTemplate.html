@@ -71,33 +71,40 @@
         color: gray !important;
     }
 
+
+    .sidebar {
+        width: 30%;
+        height: 100%;
+        float: left;
+        margin-top: 20px;
+        border: 1px solid gray;
+    }
+
+    .confContent {
+        width: 69%;
+        min-height: 50%;
+        float: right;
+        margin-top: 20px;
+        padding-left: 20px;
+    }
+
 </style>
 
 
 <md-content id="myContainer" class="myContainer md-padding" folder-drop folderdrop-events="dropFile">
+
+    <!-- Debut Navbar -->
     <md-nav-bar nav-bar-aria-label="navigation links">
-        <!-- <md-nav-item md-nav-click="goto(1)" name="page1">
-            FileList
-        </md-nav-item>
-
-        <md-nav-item md-nav-click="goto(2)" name="page2">
-            Folder organization
-        </md-nav-item>
-
-        <md-nav-item md-nav-click="goto(3)" name="page3">
-            Validation item
-        </md-nav-item>
-
-        <md-nav-item md-nav-click="goto(4)" name="page4">
-            Graph
-        </md-nav-item> -->
 
         <md-nav-item ng-repeat="tab in myAllTabs" ng-if="!DisableTab(tab)" md-nav-click="goto($index + 1)" name="page{{$index + 1}}">
             {{tab.title.get()}}
         </md-nav-item>
 
     </md-nav-bar>
+    <!-- Fin Navbar -->
 
+
+    <!-- Affichage de l'onglet FileList  -->
     <div class="content" ng-if="currentPage == 1">
         <div class="search">
             <md-input-container class="md-block">
@@ -333,8 +340,10 @@
         </div>
     </div>
 
+    <!-- Fin de l'affichage de l'onglet FileList  -->
 
 
+    <!-- Affichage de l'onglet Folder Organization -->
     <div class="content" ng-if="currentPage == 2">
         <folder-organization tree-plugins="contextmenu,dnd"
         tree-contextmenu="contextMenu"
@@ -345,8 +354,10 @@
         tree-events="select_node:onChangeNodeTree;open_node:onChangeNodeTree;close_node:onChangeNodeTree"
         tree-binds="dblclick.jstree:onbdlclick"></folder-organization>
     </div>
+    <!-- fin de l'affichage de l'onglet Folder Organization -->
 
 
+    <!-- Affichage de l'onglet Validation Item -->
     <div class="content" ng-if="currentPage == 3">
 
             <md-button class="myBtn md-raised" ng-click="editFileInfo($event)">
@@ -389,8 +400,11 @@
 
         </div>
     </div>
+    <!-- fin de l'affichage de l'onglet Validation Item -->
 
 
+
+    <!-- Affichage de l'onglet Graph -->
     <div class="content" ng-if="currentPage == 4">
 
         <div class="graphStat">
@@ -403,5 +417,73 @@
             <canvas id="myChart" width="100%" height="90%" chart-directive></canvas>
         </div>
     </div>
+    <!-- Fin de l'affichage de l'onglet Graph -->
+
+
+    <!-- Affichage de l'onglet Manager -->
+    <div class="content" ng-if="currentPage == 5">
+        <div class="sidebar">
+
+            <md-list>
+                <md-list-item ng-repeat="tab in myAllTabs" ng-if="!tab.all.get()" ng-click="configureTab(tab)">
+                    <p> {{ tab.title.get() | uppercase }} </p>
+                </md-list-item>
+            </md-list>
+
+        </div>
+
+        <div class="confContent">
+
+            <div ng-if="!tabSelected">
+                <h4>Selectionnez un onglet</h4>
+            </div>
+
+            <div ng-if="tabSelected.all.get()">
+                <div style="text-align: center;margin-top: 30px">
+                    <h3>{{tabSelected.title.get() | uppercase}}</h3>
+                </div>
+
+                <h4>Cet onglet est public</h4>
+            </div>
+
+            <div ng-if="tabSelected && !tabSelected.all.get()">
+                <div style="text-align: center;margin-top: 30px">
+                    <h3>{{tabSelected.title.get() | uppercase}}</h3>
+                </div>
+
+                
+                <div class="search">
+                    <md-input-container class="md-block">
+                        <input  ng-model="searchUser" placeholder="Nom de l'utilisateur"/>
+                    </md-input-container>
+                </div>
+
+                
+                <table style="width: 100%;margin-top: 20px;">
+                    <thead>
+                        <tr>
+                            <th title="ID" style="width: 20%">ID</th>
+                            <th title="Nom d'utilisateur" style="width: 40%">Nom d'utilisateur</th>
+                            <th style="width: 20%">
+                                Permission
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody style="border-top: 1px solid #ffffff;">
+                        <tr ng-repeat="user in _allUsers | filter:searchUser">
+                            <td>{{user.id}}</td>
+                            <td>{{user.name}}</td>
+                            <td style="padding-top: 5px;">
+                                <md-checkbox class="md-primary" ng-checked="userHasPermission(user)"  ng-model="_x" ng-click="modifyUserPermission(user)" aria-label="givePermission" ></md-checkbox>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+    </div>
+    <!-- Fin de l'affichage de l'onglet Manager -->
+
+
 
 </md-content>
