@@ -51,7 +51,7 @@
         </div>
 
         <md-input-container md-no-float class="md-block">
-            <input ng-model="name" placeholder="name (4 Letters max)"  />
+            <input ng-model="name" placeholder="Nom (4 lettres max)"  />
         </md-input-container>
 
         <md-input-container class="md-block">
@@ -72,7 +72,7 @@
                         md-search-text="searchText"
                         md-items="item in querySearch(searchText)"
                         md-item-text="item.name"
-                        placeholder="Username...">
+                        placeholder="nom d'utilisateur...">
                     <span md-highlight-text="searchText">{{item.id}} - {{item.name}}</span>
                 </md-autocomplete>
 

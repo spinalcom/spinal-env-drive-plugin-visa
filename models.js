@@ -148,13 +148,14 @@ module.exports.MessageModel = MessageModel;
  */
 var TabsModel = class TabsModel extends Model {
 
-    constructor(argTitle,argAll) {
+    constructor(argTitle,argAll,argIcon) {
         super();
         this.add_attr({
             id : newGuid(),
             title : argTitle,
             users : [{id : 168, name : "admin"}],
-            all : argAll
+            all : argAll,
+            icon : argIcon
         })
     }
 
@@ -173,11 +174,12 @@ module.exports.TabsModel = TabsModel;
         this.add_attr({
             listCaseValidation : new Lst(),
             tabs : [
-                new TabsModel("file list",true),
-                new TabsModel("folder organization",false),
-                new TabsModel("validation item",false),
-                new TabsModel("graph",true),
-                new TabsModel("Manager",false)
+                new TabsModel("Documents",true,"list"),
+                new TabsModel("Organisation",false,"folder-open"),
+                new TabsModel("Visas",false,"cc-visa"),
+                new TabsModel("Dashboard",true,"line-chart "),
+                new TabsModel("Droits",false,"unlock-alt"),
+                new TabsModel("Info",false,"info")
             ]
         })
     }

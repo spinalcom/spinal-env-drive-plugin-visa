@@ -40,33 +40,7 @@
 
 
             initQ = $q.defer()
-            // ngSpinalCore.load_root()
-            // .then((data) => {
-                
 
-            //     for (var i = 0; i < data.length; i++) {
-            //         if(data[i].name.get() == "__visa__" && data[i]._info.isRoot) {
-            //             data[i].load((m) => {
-            //                 factory.allVisa = m;
-            //                 factory.loadPage.set(!factory.loadPage.get());
-            //                 initQ.resolve(factory.allVisa);
-            //             })
-                        
-            //             return;
-                        
-            //         }
-                    
-            //     }
-
-            //     factory.allVisa = new Directory();
-            //     let _visa = new Directory();
-
-            //     data.add_file("__visa__",_visa,{model_type : "Directory", admin : true, isRoot : true});
-            //     factory.loadPage.set(!factory.loadPage.get());
-
-            //     initQ.resolve(factory.allVisa);
-
-            // },() => { })
 
             ngSpinalCore.load('__visa__')
             .then((data) => {
@@ -79,21 +53,22 @@
             },() => {
 
                 factory.allVisa = new Directory();
+                factory.loadPage = new Bool(true);
 
                 ngSpinalCore.load_root()
                 .then((data) => {
-                    
-                    factory.loadPage = new Bool(true);
+                                
                     data.add_file("__visa__",factory.allVisa,{model_type : "Directory", admin : true, isRoot : true, load_page : factory.loadPage,parameters : new ParameterModel()});
                     factory.loadPage.set(!factory.loadPage.get());
                     initQ.resolve(factory.allVisa);
-
                     
+                    return
                 },() => {})
                 
                 
                 
             })
+            
             
             return initQ.promise;
 
@@ -183,15 +158,6 @@
             
 
         }
-
-/*    
-        factory.addVisaState = (name,validList) => {   
-            var myDirectory = new Directory();
-
-            factory.allVisa.add_file(name,myDirectory,{listVisaValidation : validList});    
-
-        }
-*/
 
         /***
          * 

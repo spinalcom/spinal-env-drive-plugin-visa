@@ -24,14 +24,14 @@
 <md-dialog aria-label="addLink" style="padding : 30px;">
 
     <div ng-if="pageNumber == 0">
-        <h3>Ajouter au visa</h3>
-        <form ng-submit="goToPage1()" ng-cloak>
+        <h3>Ajouter au Processus de visa</h3>
+        <form ng-submit="answer()" ng-cloak>
     
             <md-dialog-content class="myContainer">
                 
                 <md-input-container class="input_header md-block" flex-gt-sm>
-                    <label>Visa</label>
-                    <md-select required ng-model="visaSelected" ng-change="selectedChange(visaSelected)">
+                    <label>Classez le(s) document(s)</label>
+                    <md-select ng-model="visaSelected" ng-change="selectedChange(visaSelected)">
                         <md-option ng-repeat="visa in allVisa track by $index" value="{{visa._server_id}}">
                         {{visa.name}}
                         </md-option>
@@ -42,16 +42,29 @@
                 <div class="displaySelect">
                     
                 </div>
-    
+                
                 <br />
+
+                <h5>Selectionnez les visas à associer</h5>
+                <div layout-gt-sm="row">
+
+                    <md-input-container  ng-repeat="myCase in caseToCheck" class="ckeckbox md-block">
+                        <md-checkbox title="{{myCase.description ? myCase.description : 'no description'}}"   name="{{myCase.name}}" ng-model="myCase.checked" required>
+                            {{myCase.name}}
+                        </md-checkbox>
+                    </md-input-container>
+                </div>
+
+                <br />
+
                 <md-input-container class="datePicker md-block">
-                    <label>Date Limite</label>
+                    <label>Choisissez une date Limite de validation (obligatoire)</label>
                     <md-datepicker  md-open-on-focus md-hide-icons="all" md-min-date="minDate" ng-model="dateToValid" ng-change="dataChanged(this)"></md-datepicker>
                 </md-input-container>
     
     
                 <md-input-container class="input_header md-block">
-                    <label>Description</label>
+                    <label>Ajouter une description (facultatif)</label>
                     <textarea ng-model="message" rows="3"></textarea>
                 </md-input-container>
     
@@ -70,7 +83,7 @@
         </form>
     </div>
     
-    <div ng-if="pageNumber == 1">
+    <!-- <div ng-if="pageNumber == 1">
 
         <md-button ng-click="goBack()">
             <i class="fa fa-arrow-left"></i>
@@ -102,6 +115,6 @@
             </md-button>
     
         </md-dialog-actions>
-    </div>
+    </div> -->
     
 </md-dialog>

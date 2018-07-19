@@ -12,11 +12,12 @@ angular.module('app.spinal-panel').directive("chartDirective",function(){
                 data : {
                     datasets : [{
                         data : scope.ItemsValidCount(),
-                        backgroundColor : ["green","red"]
+                        backgroundColor : ["green","red","blue"]
                     }],
                     labels : [
-                        'Valid',
-                        'Not Valid'
+                        'Approuvé',
+                        'Rejeté',
+                        'Traitement encours'
                     ]
                 }
             })

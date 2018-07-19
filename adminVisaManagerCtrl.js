@@ -13,6 +13,25 @@
         icon : "paper-plane"
     }]
 
+
+    $scope.tutorials = [
+
+        {
+            number : 1,
+            title : "Créer un dossier",
+            description : "Dans l'onglet \"Dossiers\", créez un/des dossier(s) dans le(s) quel(s) les documents à valider seront classés"
+        },{
+            number : 2,
+            title : "Créer un Visa",
+            description : "Dans l'onglet \"Visas\", créez un/des visas et attribuez les droits sur ce visa"
+        },{
+            number : 3,
+            title : "Ajouter un Document",
+            description : "Vous pouvez ajouter un/des document(s) au processus visa en selectionnant le(s) document(s), ensuite un clique droit et cliquez en fin sur \"Ajouter au processus de visa\" "
+        }
+
+    ]
+
     let init = visaManagerService.init()
     let allCase = visaManagerService.getAllCase();
     let allTabs = visaManagerService.getTabs();
@@ -551,7 +570,7 @@
                     $scope.id = item.id.get();
                     $scope.users = item.users.get();
                 } else {
-                    $scope.title = "Add case";
+                    $scope.title = "Ajouter un Visa";
                     $scope.name = ""
                     $scope.description = ""
                     $scope.users = []; 
@@ -718,15 +737,22 @@
     $scope.ItemsValidCount = () => {
         var cptValid = 0;
         var cptInValid = 0;
+        var cptProcessing = 0;
+
         for (var i = 0; i < $scope.allItems.length; i++) {
             if($scope.allItems[i]._info.visaValidation.isValid == 100) {
                 cptValid++;
             } else {
-                cptInValid++;
+                if(visaManagerService.caseInvalid($scope.allItems[i])) {
+                    cptInValid++;
+                } else {
+                    cptProcessing++;
+                }
+                
             }
         }
 
-        return [cptValid , cptInValid];
+        return [cptValid , cptInValid,cptProcessing];
 
     }
 

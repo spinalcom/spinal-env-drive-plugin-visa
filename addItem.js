@@ -48,23 +48,6 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
         let visaManagerService = obj.scope.injector.get('visaManagerService');
 
 
-        // /* Si le fichier est déjà en cours de validation afficher une alert  */
-        // if(FileSystem._objects[obj.file._server_id]._info.visaValidation || FileSystem._objects[obj.file._server_id]._info.admin) {
-        //     $mdDialog.show(
-        //         $mdDialog.alert()
-        //         .parent(angular.element(document.body))
-        //         .clickOutsideToClose(true)
-        //         .title('Sorry')
-        //         .textContent('Sorry this file has already been sent for validation !!!')
-        //         .ariaLabel('Alert')
-        //         .ok('OK')
-        //         .targetEvent(obj.evt)
-        //     );
-
-        //     return;
-        // }
-
-
 
         for (var i = 0; i < items.length; i++) {
 
@@ -108,8 +91,6 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
                 $scope.caseToCheck = [];
 
                 visaManagerService.getAllCase().then((el) => {
-
-                    console.log("element",el);
 
                     var myCases = el._info.parameters.listCaseValidation.get();
 
@@ -177,7 +158,7 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
                             var html = `
                             <md-input-container id="select_${order}" class="input_header md-block" flex-gt-sm>
-                                <label>Name</label>
+                                <label>Selectionnez un sous-dossier</label>
                                 <md-select required ng-model="x_${order}" ng-change="subVisaChanged(this.x_${order},${order + 1})">`;
 
                             for (var i = 0; i < data.length; i++) {
@@ -229,18 +210,25 @@ class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
 
                 }
 
-                $scope.goToPage1 = function() {
+                // $scope.goToPage1 = function() {
+
+                //     if($scope.message.trim().length == 0) {
+                //         $scope.message = "-";
+                //     } else {
+                //         $scope.message = $scope.message.trim();
+                //     }
+                //     // $mdDialog.hide(result);
+                //     $scope.pageNumber = 1;
+                // }
+
+                $scope.answer = () => {
 
                     if($scope.message.trim().length == 0) {
                         $scope.message = "-";
                     } else {
                         $scope.message = $scope.message.trim();
                     }
-                    // $mdDialog.hide(result);
-                    $scope.pageNumber = 1;
-                }
 
-                $scope.answer = () => {
                     var result = {data : {stateId : $scope.visa != null ? $scope.visa : $scope.visaS, message : $scope.message, itemId : items, validateBefore : new Date($scope.dateToValid).getTime()}}
                     
                     result.data["path"] = "/" + FileSystem._objects[$scope.visaS].name.get();
