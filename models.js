@@ -176,7 +176,7 @@ module.exports.TabsModel = TabsModel;
             tabs : [
                 new TabsModel("Documents",true,"list"),
                 new TabsModel("Organisation",false,"folder-open"),
-                new TabsModel("Visas",false,"cc-visa"),
+                new TabsModel("Visas",false,"check-square"),
                 new TabsModel("Dashboard",true,"line-chart "),
                 new TabsModel("Droits",false,"unlock-alt"),
                 new TabsModel("Info",false,"info")

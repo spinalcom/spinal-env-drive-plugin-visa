@@ -104,6 +104,21 @@
         background: gray;
     }
 
+    .info_detail {
+        width: 100%;
+        height: 30px;
+    }
+
+    .infoName {
+        width: 45%;
+        float: left;
+    }
+
+    .infoResult {
+        width: 55%;
+        float: right;
+    }
+
 </style>
 
 
@@ -126,7 +141,7 @@
     <div class="content" ng-if="currentPage == 1">
 
         <div class="tab_description">
-            La liste des documents 
+            La liste des documents à viser
         </div>
 
         <div class="search">
@@ -136,7 +151,7 @@
         </div>
 
 
-        <md-input-container class="md-block" flex-gt-sm>
+        <!-- <md-input-container class="md-block" flex-gt-sm>
             <label>Item Afficher</label>
             <md-select ng-model="itemValid">
               <md-option value="all">Tous les visas</md-option>
@@ -153,7 +168,7 @@
                 <md-option value="notValidbox">visas non Modifiables</md-option>
                 <md-option value="boxnotValidbox"> visas Rejetés</md-option>
             </md-select>
-        </md-input-container>
+        </md-input-container> -->
 
 
 
@@ -193,6 +208,7 @@
                             <md-menu>
                                 <md-button class="md-icon-button" aria-label="choose item" ng-click="$mdOpenMenu()" style="text-align: left">
                                     <i ng-style="{color : getFilterIcon(filterData)['color']}" class="fa fa-{{getFilterIcon(filterData)['name']}}"></i>
+                                    <i class="fa fa-angle-down"></i>
                                 </md-button>
 
                                 <md-menu-content>
@@ -253,17 +269,18 @@
                         </th>
                         <th class="tableTd"  title="Nom">Nom</th>
                         <th class="tableTd"  title="Chemin">Dossier</th>
-                        <th class="tableTd"  title="Description">Description</th>
+                        <!-- <th class="tableTd"  title="Description">Description</th> -->
 
-                        <th class="tableTd" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" id="0" > <!-- ng-click="sortByValidation($event,case)" -->
+                        <th class="tableTd" style="max-width: 70px;" ng-if="myAllCases.length > 0" ng-repeat="case in myAllCases track by $index" title="{{case.description.get()}}" id="0" > <!-- ng-click="sortByValidation($event,case)" -->
                             {{case.name.get() | uppercase}}
                             <!-- <i class="fa fa-sort"></i> -->
                         </th>
 
-                        <th class="tableTd"  title="Date de creation">Date de Creation</th>
+                        <!-- <th class="tableTd"  title="Date de creation">Date de Creation</th> -->
                         <th class="tableTd"  title="Date limite de validation">Date Limite</th>
                         <th class="tableTd"  title="Pourcentage de validation">%</th>
-                        <th></th>
+                        <th style="width: 50px;"></th>
+                        <th style="width: 50px;"></th>
                     </tr>
                 </thead>
 
@@ -275,7 +292,7 @@
 
                         <td title="{{item.name.get()}}" class="tableTd">{{item.name.get()}}</td>
                         <td title="{{item._info.visaValidation.path.get()}}" class="tableTd">{{item._info.visaValidation.path.get()}}</td>
-                        <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td>
+                        <!-- <td title="{{item._info.visaValidation.message.get()}}" class="tableTd">{{item._info.visaValidation.message.get()}}</td> -->
 
                         <td class="visaCheckbox" ng-if="item._info.visaValidation.validation.length > 0" ng-repeat="j in item._info.visaValidation.validation track by $index">
                             <!-- <md-checkbox  aria-label="checkbox" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-model="checkbox" ng-checked="j.valid.get()" ng-click="checkCase(j._server_id,item._info.visaValidation)"></md-checkbox> -->
@@ -301,7 +318,7 @@
                             </md-input-container> -->
 
                             <md-menu>
-                                <md-button class="md-icon-button" aria-label="choose item" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" ng-click="$mdOpenMenu()" style="text-align: left">
+                                <md-button class="md-icon-button" aria-label="choose item" ng-disabled="!j.canBeChecked.get() || !userCanCheck(j)" title="{{!j.canBeChecked.get() || !userCanCheck(j) ? 'Vous ne pouvez pas modifier cette case': getValidationIcon(j)['title'] }}" ng-click="$mdOpenMenu()" style="text-align: left">
                                     <i ng-style="{color : getValidationIcon(j)['color']}" class="fa fa-{{getValidationIcon(j)['name']}}"></i>
                                 </md-button>
 
@@ -333,13 +350,39 @@
 
                         </td>
                         
-                        <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td>
+                        <!-- <td title="{{item._info.visaValidation.date.get() | date}}" class="tableTd">{{item._info.visaValidation.date.get() | date}}</td> -->
 
                         <td title="{{item._info.visaValidation.validate_before.get() | date}}" class="tableTd">{{item._info.visaValidation.validate_before.get() | date}}</td>
 
                         <td title="{{item._info.visaValidation.isValid.get()}} %" class="tableTd">
                             {{item._info.visaValidation.isValid.get()}} %
                         </td>
+
+                        <td>
+                            <md-button class="md-icon-button" aria-label="Info">
+                                
+                                <i class="fa fa-info">
+                                    <md-tooltip md-direction="left" style="min-height : 100px;min-width: 200px;">
+                                        <div class="info_detail">
+                                            <div class="infoName">Nom : </div>
+                                            <div class="infoResult">{{item.name.get()}}</div>
+                                        </div>
+
+                                        <div class="info_detail">
+                                            <div class="infoName">Date de creation : </div>
+                                            <div class="infoResult">{{item._info.visaValidation.date.get() | date}}</div>
+                                        </div>
+
+                                        <div class="info_detail">
+                                            <div class="infoName">Description : </div>
+                                            <div class="infoResult">{{item._info.visaValidation.message.get()}}</div>
+                                        </div>
+
+                                    </md-tooltip>
+                                </i>
+                            </md-button>
+                        </td>
+
                         <td style="text-align : center" title="menu">
                             <md-menu>
                                 <md-button aria-label="open menu" class="md-icon-button" ng-click="$mdOpenMenu()">

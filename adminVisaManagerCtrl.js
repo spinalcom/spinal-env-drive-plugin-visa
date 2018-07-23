@@ -1170,12 +1170,15 @@
         if(i == 1) {
             obj["name"] = "check-square";
             obj["color"] = "green";
+            obj["title"] = "Approuvé";
         } else if(i == 0) {
             obj["name"] = "times-circle";
             obj["color"] = "red";
+            obj["title"] = "Rejeté";
         } else if(i == -1) {
             obj["name"] = "asterisk";
             obj["color"] = "blue";
+            obj["title"] = "À Traiter";
         }
 
         return obj;
