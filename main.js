@@ -1,6 +1,6 @@
 require('./visaManagerCtrl');
 require('./visaManagerService');
-require('./addItem');
+const SpinalDrive_App_FileExplorer_visa = require('./addItem');
 require('./folder.directive');
 require('./adminVisaManagerCtrl');
 // require('./adminVisaManagerService');
