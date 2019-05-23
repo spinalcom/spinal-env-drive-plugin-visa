@@ -13,9 +13,7 @@ const SpinalDrive_App = spinalEnvDriveCore.SpinalDrive_App;
 * SpinalDrive_App_FileExplorer_visa
 * @extends {SpinalDrive_App}
 */
-
-
-class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
+module.exports = class SpinalDrive_App_FileExplorer_visa extends SpinalDrive_App  {
     /**
    * Creates an instance of SpinalDrive_App_FileExplorer_visa.
    * @memberof SpinalDrive_App_FileExplorer_visa
